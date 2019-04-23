@@ -25,6 +25,8 @@ public class PhaseUnwrapping implements Command {
     private boolean M_single_frame;
     @Parameter(label = "Pixel phase value")
     private float M_phase = 6.2831853072f;
+    @Parameter(label = "Output type", choices = {"8-bit", "32-bit", "32-bit (radians)"})
+    private String M_output_type;
 
     public void run() {
         ImagePlus imp;
@@ -43,7 +45,7 @@ public class PhaseUnwrapping implements Command {
             new ImagePlus("Quality", new FloatProcessor(quality.get_result())).show();
             SingleWavelength proc = new SingleWavelength(image, quality, true, M_phase);
             proc.calculate();
-            imp = new ImagePlus("Result", new FloatProcessor(proc.get_result()));
+            imp = new ImagePlus("Result", convert_result(proc.get_result()));
         }
         else {
             int ts = M_phase_image.getNFrames();
@@ -84,14 +86,32 @@ public class PhaseUnwrapping implements Command {
                     float[][] image = M_phase_image.getStack().getProcessor(current_slice).getFloatArray();
                     SingleWavelength proc = new SingleWavelength(image, quality, true, M_phase);
                     proc.calculate();
-                    ImageProcessor slice_result = new FloatProcessor(proc.get_result()).convertToByteProcessor();
-                    result.addSlice(M_phase_image.getStack().getSliceLabel(current_slice) + ", unwrapped", slice_result);
+                    result.addSlice(M_phase_image.getStack().getSliceLabel(current_slice) + ", unwrapped", convert_result(proc.get_result()));
                 }
             }
-            imp = IJ.createHyperStack(M_phase_image.getTitle() + ", unwrapped", width, height, 1, zs, ts, 8);
+            imp = IJ.createHyperStack(M_phase_image.getTitle() + ", unwrapped", width, height, 1, zs, ts, 32);
             imp.setStack(result);
             //imp.setCalibration(...);
         }
         imp.show();
+    }
+
+    private ImageProcessor convert_result(float[][] image)
+    {
+        if (M_output_type.equals("8-bit")) {
+            return new FloatProcessor(image).convertToByteProcessor();
+        }
+        else if (M_output_type.equals("32-bit")) {
+            return new FloatProcessor(image);
+        }
+        else { // 32-bit radians
+            for (int x = 0; x < image.length; ++x) {
+                for (int y = 0; y < image[0].length; ++y) {
+                    image[x][y] /= M_phase;
+                    image[x][y] *= Math.PI * 2;
+                }
+            }
+            return new FloatProcessor(image);
+        }
     }
 }
