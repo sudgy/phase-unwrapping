@@ -80,6 +80,8 @@ public class PhaseUnwrapping implements Command, Initializable {
             ImagePlus quality_img = null;
             int q_ts = quality.get_ts();
             int q_zs = quality.get_zs();
+            if (q_ts == 0) q_ts = ts;
+            if (q_zs == 0) q_zs = zs;
             if (q_ts != ts && q_zs != zs) {
                 float[][] image = phase_image.getProcessor().getFloatArray();
                 quality.calculate(image, 1, 1);

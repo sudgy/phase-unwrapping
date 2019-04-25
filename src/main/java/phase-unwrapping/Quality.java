@@ -31,6 +31,6 @@ public interface Quality extends ImageJPlugin, Prioritized {
     default void set_phase_value(float phase_value) {}
     float[][]    calculate(float[][] phase_image, int t, int z);
     float[][]    get_result();
-    default int  get_ts() {return 1;}
-    default int  get_zs() {return 1;}
+    default int  get_ts() {return 0;}
+    default int  get_zs() {return 0;}
 }
