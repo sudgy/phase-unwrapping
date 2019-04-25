@@ -44,7 +44,7 @@ public class QualityParameter extends HoldingParameter<Quality> {
         M_qualities = P_quality_service.get_qualities();
         ArrayList<Entry<String, Quality>> qualities_array =
             new ArrayList<>(M_qualities.entrySet());
-        Collections.sort(qualities_array, /*Collections.reverseOrder(*/
+        Collections.sort(qualities_array,
             new Comparator<Entry<String, Quality>>() {
                 @Override
                 public int compare(Entry<String, Quality> lhs,
@@ -52,7 +52,7 @@ public class QualityParameter extends HoldingParameter<Quality> {
                 {
                     return lhs.getValue().compareTo(rhs.getValue());
                 }
-            }//)
+            }
         );
         ArrayList<String> choices_list = new ArrayList<>();
         for (Entry<String, Quality> entry : qualities_array) {

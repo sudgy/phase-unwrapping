@@ -19,7 +19,13 @@
 
 package edu.pdx.imagej.phase_unwrapping;
 
-import ij.IJ;
+import org.scijava.ItemIO;
+import org.scijava.app.StatusService;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import net.imagej.ops.AbstractOp;
+import net.imagej.ops.Op;
+
 import ij.ImagePlus;
 import ij.process.FloatProcessor;
 
@@ -27,7 +33,16 @@ import java.awt.Point;
 import java.util.TreeSet;
 import java.util.HashSet;
 
-public class SingleWavelength {
+@Plugin(type = Op.class, name = "Single Wavelength Phase Unwrapping")
+public class SingleWavelength extends AbstractOp {
+    @Parameter private StatusService P_status;
+    // Inputs
+    @Parameter private float[][] P_phase_image;
+    @Parameter private Quality   P_quality;
+    @Parameter private boolean   P_show_progress;
+    @Parameter private float     P_phase_value;
+    // Outputs
+    @Parameter(type = ItemIO.OUTPUT) float[][] P_result;
     private static class QPoint implements Comparable<QPoint> {
         public Point p = new Point();
         public float value;
@@ -51,44 +66,35 @@ public class SingleWavelength {
         }
     }
 
-    private float[][] M_original;
     private int M_length;
     private int M_height;
-    private float[][] M_result;
     private TreeSet<QPoint> M_outside_points;
     private HashSet<Point> M_done_points;
     private QPoint[][] M_quality;
-    private float M_phase;
-    private boolean M_debug;
 
-    public SingleWavelength(float[][] original, Quality quality, boolean debug, float phase)
+    @Override
+    public void run()
     {
-        M_phase = phase;
-        M_original = original;
-        M_length = M_original.length;
-        M_height = M_original[0].length;
-        M_result = new float[M_length][M_height];
+        M_length = P_phase_image.length;
+        M_height = P_phase_image[0].length;
+        P_result = new float[M_length][M_height];
         M_outside_points = new TreeSet<QPoint>();
         M_done_points = new HashSet<Point>();
-        M_quality = process_quality(original, quality);
-        M_debug = debug;
-    }
+        process_quality();
 
-    public void calculate()
-    {
         Point current_point = new Point(M_length / 2, M_height / 2);
-        M_result[current_point.x][current_point.y] = M_original[current_point.x][current_point.y];
+        P_result[current_point.x][current_point.y] = P_phase_image[current_point.x][current_point.y];
         M_done_points.add(current_point);
         add_outside_points(current_point);
 
         ImagePlus timp = null;
-        if (M_debug) timp = new ImagePlus("Temp");
+        if (P_show_progress) timp = new ImagePlus("Temp");
         while (M_done_points.size() < M_length * M_height) {
             QPoint new_point = M_outside_points.pollLast();
             if (M_done_points.size() % 50000 == 0) {
-                IJ.showProgress(M_done_points.size(), M_length * M_height);
-                if (M_debug) {
-                    timp.setProcessor(new FloatProcessor(M_result));
+                P_status.showProgress(M_done_points.size(), M_length * M_height);
+                if (P_show_progress) {
+                    timp.setProcessor(new FloatProcessor(P_result));
                     timp.show();
                 }
             }
@@ -96,40 +102,32 @@ public class SingleWavelength {
             current_point = new_point.p;
             Point from_point = new_point.p_from;
             assert from_point != null;
-            float current_val = M_original[current_point.x][current_point.y];
-            float from_val = M_result[from_point.x][from_point.y];
+            float current_val = P_phase_image[current_point.x][current_point.y];
+            float from_val = P_result[from_point.x][from_point.y];
             if (current_val != from_val) {
                 from_val -= current_val;
-                from_val /= M_phase;
+                from_val /= P_phase_value;
                 from_val = Math.round(from_val);
-                from_val *= M_phase;
+                from_val *= P_phase_value;
                 current_val += from_val;
             }
-            M_result[current_point.x][current_point.y] = current_val;
+            P_result[current_point.x][current_point.y] = current_val;
             M_done_points.add(current_point);
             add_outside_points(current_point);
         }
     }
-    private QPoint[][] process_quality(float[][] phase_image, Quality q)
+    private void process_quality()
     {
-        QPoint[][] result = new QPoint[M_original.length][M_original[0].length];
-        float[][] quality;
-        if (q == null) quality = new float[result.length][result[0].length];
-        else quality = q.get_result();
-        for (int x = 0; x < result.length; ++x) {
-            for (int y = 0; y < result[0].length; ++y) {
-                result[x][y] = new QPoint();
-                result[x][y].p.x = x;
-                result[x][y].p.y = y;
-                if (q == null) result[x][y].value = 0;
-                else result[x][y].value = quality[x][y];
+        M_quality = new QPoint[P_phase_image.length][P_phase_image[0].length];
+        float[][] quality = P_quality.get_result();
+        for (int x = 0; x < M_quality.length; ++x) {
+            for (int y = 0; y < M_quality[0].length; ++y) {
+                M_quality[x][y] = new QPoint();
+                M_quality[x][y].p.x = x;
+                M_quality[x][y].p.y = y;
+                M_quality[x][y].value = quality[x][y];
             }
         }
-        return result;
-    }
-    public float[][] get_result()
-    {
-        return M_result;
     }
     private void add_outside_points(Point p)
     {
