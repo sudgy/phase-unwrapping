@@ -119,7 +119,7 @@ public class PhaseUnwrapping implements Command, Initializable {
             imp = IJ.createHyperStack(label, width, height, 1, zs, ts, 32);
             imp.setStack(result);
         }
-        //imp.setCalibration(...);
+        imp.copyScale(phase_image);
         imp.show();
     }
 
