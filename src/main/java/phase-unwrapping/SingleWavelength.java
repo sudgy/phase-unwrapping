@@ -51,7 +51,8 @@ public class SingleWavelength extends AbstractOp {
         public int compareTo(QPoint other) {
             if (value < other.value) return -1;
             else if (value > other.value) return 1;
-            // This is needed to make it consistent with equals, which is required for TreeSet to work correctly
+            // This is needed to make it consistent with equals, which is
+            // required for TreeSet to work correctly
             else if (p.equals(other.p)) return 0;
             else return -1;
         }
@@ -83,7 +84,8 @@ public class SingleWavelength extends AbstractOp {
         process_quality();
 
         Point current_point = new Point(M_length / 2, M_height / 2);
-        P_result[current_point.x][current_point.y] = P_phase_image[current_point.x][current_point.y];
+        P_result[current_point.x][current_point.y] =
+            P_phase_image[current_point.x][current_point.y];
         M_done_points.add(current_point);
         add_outside_points(current_point);
 
@@ -92,7 +94,7 @@ public class SingleWavelength extends AbstractOp {
         while (M_done_points.size() < M_length * M_height) {
             QPoint new_point = M_outside_points.pollLast();
             if (M_done_points.size() % 50000 == 0) {
-                P_status.showProgress(M_done_points.size(), M_length * M_height);
+                P_status.showProgress(M_done_points.size(), M_length*M_height);
                 if (P_show_progress) {
                     timp.setProcessor(new FloatProcessor(P_result));
                     timp.show();

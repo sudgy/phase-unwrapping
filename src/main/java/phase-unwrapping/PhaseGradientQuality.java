@@ -22,7 +22,9 @@ package edu.pdx.imagej.phase_unwrapping;
 import org.scijava.Priority;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Quality.class, name = "Phase Gradient", priority = Priority.VERY_HIGH * 0.999) // Be right after normal gradient
+@Plugin(type = Quality.class,
+        name = "Phase Gradient",
+        priority = Priority.VERY_HIGH * 0.999) // Right after normal gradient
 public class PhaseGradientQuality extends AbstractQuality {
     @Override
     public void set_phase_value(float phase_value) {M_phase = phase_value;}
@@ -38,8 +40,10 @@ public class PhaseGradientQuality extends AbstractQuality {
                         int new_x = x + x_plus;
                         int new_y = y + y_plus;
                         if (new_x == -1 || new_y == -1) continue;
-                        if (new_x == M_data.length || new_y == M_data[0].length) continue;
-                        float difference = phase_image[x][y] - phase_image[new_x][new_y];
+                        if (new_x == M_data.length ||
+                            new_y == M_data[0].length) continue;
+                        float difference = phase_image[x][y]
+                                           - phase_image[new_x][new_y];
                         if (difference < -M_phase / 2) difference += M_phase;
                         if (difference > M_phase / 2) difference -= M_phase;
                         M_data[x][y] -= Math.abs(difference);

@@ -33,7 +33,8 @@ import net.imagej.ops.OpService;
 
 import edu.pdx.imagej.dynamic_parameters.*;
 
-@Plugin(type = Command.class, menuPath = "Plugins>DHM>Phase Unwrapping>Single Wavelength")
+@Plugin(type = Command.class,
+        menuPath = "Plugins>DHM>Phase Unwrapping>Single Wavelength")
 public class PhaseUnwrapping implements Command, Initializable {
     @Parameter private OpService        P_ops;
 

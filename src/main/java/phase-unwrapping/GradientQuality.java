@@ -26,7 +26,9 @@ import org.scijava.plugin.Plugin;
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.ImageParameter;
 
-@Plugin(type = Quality.class, name = "Gradient", priority = Priority.VERY_HIGH * 0.9999) // Be right before Phase Gradient
+@Plugin(type = Quality.class,
+        name = "Gradient",
+        priority = Priority.VERY_HIGH * 0.9999) // Right before Phase Gradient
 public class GradientQuality extends AbstractQuality {
     @Override
     public DParameter param()
@@ -41,7 +43,10 @@ public class GradientQuality extends AbstractQuality {
     {
         ImagePlus image = M_image.get_value();
         int current_slice = image.getStackIndex(1, z, t);
-        float[][] data = M_image.get_value().getStack().getProcessor(current_slice).getFloatArray();
+        float[][] data = M_image.get_value()
+                                .getStack()
+                                .getProcessor(current_slice)
+                                .getFloatArray();
         M_result = new float[data.length][data[0].length];
         for (int x = 0; x < M_result.length; ++x) {
             for (int y = 0; y < M_result[0].length; ++y) {
@@ -51,8 +56,10 @@ public class GradientQuality extends AbstractQuality {
                         int new_x = x + x_plus;
                         int new_y = y + y_plus;
                         if (new_x == -1 || new_y == -1) continue;
-                        if (new_x == M_result.length || new_y == M_result[0].length) continue;
-                        M_result[x][y] -= Math.abs(data[x][y] - data[new_x][new_y]);
+                        if (new_x == M_result.length ||
+                            new_y == M_result[0].length) continue;
+                        float diff = data[x][y] - data[new_x][new_y];
+                        M_result[x][y] -= Math.abs(diff);
                     }
                 }
             }
