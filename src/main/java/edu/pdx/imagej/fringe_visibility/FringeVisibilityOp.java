@@ -25,13 +25,25 @@ import org.scijava.plugin.Plugin;
 import net.imagej.ops.AbstractOp;
 import net.imagej.ops.Op;
 
+/** This is a simple Op that determines the "fringe visibility" of a hologram.
+ * <p>
+ * Note that because its only input is a float[][], when calling this Op, you
+ * must cast your float[][] to an Object, or else Java thinks you are passing
+ * a bunch of float[]'s instead.
+ */
 @Plugin(type = Op.class, name = "Fringe Visibility")
 public class FringeVisibilityOp extends AbstractOp {
     // Inputs
-    @Parameter float[][] P_data;
+    @Parameter private float[][] P_data;
     // Outputs
-    @Parameter(type = ItemIO.OUTPUT) float[][] P_result;
+    @Parameter(type = ItemIO.OUTPUT) private float[][] P_result;
 
+    /** Compute the fringe visibility.
+     * <p>
+     * Note that because its only input is a float[][], when calling this Op, you
+     * must cast your float[][] to an Object, or else Java thinks you are passing
+     * a bunch of float[]'s instead.
+     */
     @Override
     public void run()
     {
