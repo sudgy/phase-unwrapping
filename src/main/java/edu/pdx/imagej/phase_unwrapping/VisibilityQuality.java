@@ -21,17 +21,18 @@ package edu.pdx.imagej.phase_unwrapping;
 
 import ij.ImagePlus;
 import org.scijava.Priority;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import net.imagej.ops.OpService;
 
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.ImageParameter;
-
-import edu.pdx.imagej.fringe_visibility.FringeVisibility;
 
 @Plugin(type = Quality.class,
         name = "Fringe Visibility",
         priority = Priority.VERY_HIGH)
 public class VisibilityQuality extends AbstractQuality {
+    @Parameter private OpService P_ops;
     @Override
     public DParameter param()
     {
@@ -48,14 +49,13 @@ public class VisibilityQuality extends AbstractQuality {
         float[][] data = hologram.getStack()
                                  .getProcessor(current_slice)
                                  .getFloatArray();
-        M_fv = new FringeVisibility(data);
-        M_fv.calculate();
-        return M_fv.result();
+        M_result = (float[][])P_ops.run("Fringe Visibility", (Object)data);
+        return M_result;
     }
-    @Override public float[][] get_result() {return M_fv.result();}
+    @Override public float[][] get_result() {return M_result;}
     @Override public int get_ts() {return M_holo.get_value().getNFrames();}
     @Override public int get_zs() {return M_holo.get_value().getNSlices();}
 
-    private FringeVisibility M_fv;
     private ImageParameter   M_holo;
+    private float[][]        M_result;
 }

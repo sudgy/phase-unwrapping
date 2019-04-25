@@ -19,30 +19,31 @@
 
 package edu.pdx.imagej.fringe_visibility;
 
-import ij.IJ;
-import ij.process.ImageProcessor;
-import ij.process.FloatProcessor;
-import ij.ImagePlus;
+import org.scijava.ItemIO;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import net.imagej.ops.AbstractOp;
+import net.imagej.ops.Op;
 
-public class FringeVisibility {
-    private float[][] M_data;
-    private float[][] M_result;
-    int M_width;
-    int M_height;
-    public FringeVisibility(float[][] data)
+@Plugin(type = Op.class, name = "Fringe Visibility")
+public class FringeVisibilityOp extends AbstractOp {
+    // Inputs
+    @Parameter float[][] P_data;
+    // Outputs
+    @Parameter(type = ItemIO.OUTPUT) float[][] P_result;
+
+    @Override
+    public void run()
     {
-        M_data = data;
-        M_width = M_data.length;
-        M_height = M_data[0].length;
-        M_result = new float[M_width][M_height];
-    }
-    public void calculate()
-    {
+        M_width = P_data.length;
+        M_height = P_data[0].length;
+        P_result = new float[M_width][M_height];
+
         float tmax = 0;
         float tmean = 0;
         for (int x = 0; x < M_width; ++x) {
             for (int y = 0; y < M_height; ++y) {
-                float val = M_data[x][y];
+                float val = P_data[x][y];
                 if (val > tmax) tmax = val;
                 tmean += val;
             }
@@ -62,7 +63,7 @@ public class FringeVisibility {
                             || (new_y < 0)
                             || (new_x == M_width)
                             || (new_y == M_height)) continue;
-                        float val = M_data[new_x][new_y];
+                        float val = P_data[new_x][new_y];
                         average += val;
                         if (val > max) max = val;
                         if (val < min) min = val;
@@ -70,12 +71,11 @@ public class FringeVisibility {
                     }
                 }
                 average /= i;
-                M_result[x][y] = ((max - average) / 2) / average;
+                P_result[x][y] = ((max - average) / 2) / average;
             }
         }
     }
-    public float[][] result()
-    {
-        return M_result;
-    }
+
+    private int M_width;
+    private int M_height;
 }
