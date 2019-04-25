@@ -1,4 +1,4 @@
-package edu.pdx.phase_unwrapping;
+package edu.pdx.imagej.phase_unwrapping;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -22,8 +22,8 @@ public class DoubleWavelength implements Command {
     private int M_wavelength2;
     @Parameter(label = "Pixel phase value")
     private float M_phase = 6.2831853072f;
-    @Parameter(label = "Debug")
-    private boolean M_debug;
+    //@Parameter(label = "Debug")
+    private boolean M_debug = false;
 
     private float M_combined_wavelength;
 

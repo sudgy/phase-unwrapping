@@ -1,4 +1,4 @@
-package edu.pdx.phase_unwrapping;
+package edu.pdx.imagej.phase_unwrapping;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -51,7 +51,7 @@ public class SingleWavelength {
         M_result = new float[M_length][M_height];
         M_outside_points = new TreeSet<QPoint>();
         M_done_points = new HashSet<Point>();
-        M_quality = process_quality(quality);
+        M_quality = process_quality(original, quality);
         M_debug = debug;
     }
 
@@ -91,16 +91,19 @@ public class SingleWavelength {
             add_outside_points(current_point);
         }
     }
-    private QPoint[][] process_quality(Quality q)
+    private QPoint[][] process_quality(float[][] phase_image, Quality q)
     {
         QPoint[][] result = new QPoint[M_original.length][M_original[0].length];
+        float[][] quality;
+        if (q == null) quality = new float[result.length][result[0].length];
+        else quality = q.get_result();
         for (int x = 0; x < result.length; ++x) {
             for (int y = 0; y < result[0].length; ++y) {
                 result[x][y] = new QPoint();
                 result[x][y].p.x = x;
                 result[x][y].p.y = y;
                 if (q == null) result[x][y].value = 0;
-                else result[x][y].value = q.get_result()[x][y];
+                else result[x][y].value = quality[x][y];
             }
         }
         return result;

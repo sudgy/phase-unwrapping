@@ -29,7 +29,7 @@ public class FringeVisibility {
             }
         }
         tmean /= M_width * M_height;
-        IJ.showMessage("" + tmax + "\n" + tmean);
+        //IJ.showMessage("" + tmax + "\n" + tmean);
         for (int x = 0; x < M_width; ++x) {
             for (int y = 0; y < M_height; ++y) {
                 float max = 0;
