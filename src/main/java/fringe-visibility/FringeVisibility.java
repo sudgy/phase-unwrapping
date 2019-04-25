@@ -1,4 +1,4 @@
-package edu.pdx.fringe_visibility;
+package edu.pdx.imagej.fringe_visibility;
 
 import ij.IJ;
 import ij.process.ImageProcessor;

@@ -1,10 +1,8 @@
-package edu.pdx.fringe_visibility;
+package edu.pdx.imagej.fringe_visibility;
 
 import ij.plugin.filter.PlugInFilter;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-
-import edu.pdx.fringe_visibility.FringeVisibility;
 
 public class FringeVisibilityPlugin implements PlugInFilter {
     public int setup(String arg, ImagePlus image) {

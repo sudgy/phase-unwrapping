@@ -7,7 +7,7 @@ import org.scijava.plugin.Plugin;
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.ImageParameter;
 
-import edu.pdx.fringe_visibility.FringeVisibility;
+import edu.pdx.imagej.fringe_visibility.FringeVisibility;
 
 @Plugin(type = Quality.class,
         name = "Fringe Visibility",
