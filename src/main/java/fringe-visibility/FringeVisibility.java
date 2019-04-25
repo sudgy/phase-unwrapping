@@ -48,7 +48,6 @@ public class FringeVisibility {
             }
         }
         tmean /= M_width * M_height;
-        //IJ.showMessage("" + tmax + "\n" + tmean);
         for (int x = 0; x < M_width; ++x) {
             for (int y = 0; y < M_height; ++y) {
                 float max = 0;
@@ -74,11 +73,6 @@ public class FringeVisibility {
                 M_result[x][y] = ((max - average) / 2) / average;
             }
         }
-    }
-    public void show()
-    {
-        ImagePlus imp = new ImagePlus("Fringe Visibility", new FloatProcessor(M_result));
-        imp.show();
     }
     public float[][] result()
     {

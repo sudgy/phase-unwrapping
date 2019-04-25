@@ -35,7 +35,7 @@ import edu.pdx.imagej.dynamic_parameters.*;
 
 @Plugin(type = Command.class,
         menuPath = "Plugins>DHM>Phase Unwrapping>Single Wavelength")
-public class PhaseUnwrapping implements Command, Initializable {
+public class SingleWavelengthCommand implements Command, Initializable {
     @Parameter private OpService        P_ops;
 
     @Parameter private ImageParameter   P_phase_image;

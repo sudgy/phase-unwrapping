@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import java.util.HashSet;
 
 @Plugin(type = Op.class, name = "Single Wavelength Phase Unwrapping")
-public class SingleWavelength extends AbstractOp {
+public class SingleWavelengthOp extends AbstractOp {
     @Parameter private StatusService P_status;
     // Inputs
     @Parameter private float[][] P_phase_image;
