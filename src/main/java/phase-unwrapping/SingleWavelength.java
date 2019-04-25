@@ -115,6 +115,8 @@ public class SingleWavelength extends AbstractOp {
             M_done_points.add(current_point);
             add_outside_points(current_point);
         }
+        timp.changes = false;
+        timp.close();
     }
     private void process_quality()
     {
