@@ -22,7 +22,7 @@ package edu.pdx.imagej.phase_unwrapping;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-public final class ArrayOps {
+final class ArrayOps {
     public static float[][] binary(final float[][] a1, final float[][] a2, BinaryOperator<Float> op)
     {
         assert a1.length == a2.length;

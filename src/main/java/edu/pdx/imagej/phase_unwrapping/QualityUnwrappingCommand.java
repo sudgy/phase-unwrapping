@@ -33,6 +33,11 @@ import net.imagej.ops.OpService;
 
 import edu.pdx.imagej.dynamic_parameters.*;
 
+/** This is a command that performs quality-guided unwrapping of images and
+ * stacks using {@link QualityUnwrappingOp}.  In addition to what
+ * QualityUnwrappingOp does, this command deals with stacks of images, and also
+ * allows the user to determine the output type of the image.
+ */
 @Plugin(type = Command.class,
         menuPath = "Plugins>DHM>Phase Unwrapping>Quality Guided")
 public class QualityUnwrappingCommand implements Command, Initializable {
@@ -45,6 +50,7 @@ public class QualityUnwrappingCommand implements Command, Initializable {
     @Parameter private ChoiceParameter  P_output_type;
     @Parameter private BoolParameter    P_show_progress;
 
+    /** Initializes the parameters. */
     @Override
     public void initialize()
     {
@@ -57,6 +63,7 @@ public class QualityUnwrappingCommand implements Command, Initializable {
         P_show_progress = new BoolParameter("Show Progress", true);
     }
 
+    /** Run the command, computing and showing all unwrapping. */
     public void run() {
         ImagePlus imp;
         Quality quality = P_quality.get_value();
