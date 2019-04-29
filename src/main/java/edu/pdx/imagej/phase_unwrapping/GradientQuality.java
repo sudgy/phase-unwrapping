@@ -26,10 +26,17 @@ import org.scijava.plugin.Plugin;
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.ImageParameter;
 
+/** GradientQuality is a {@link Quality} that uses the gradient of an image.  It
+ * assigns a higher value to spots with a lower gradient.
+ */
 @Plugin(type = Quality.class,
         name = "Gradient",
         priority = Priority.VERY_HIGH * 0.9999) // Right before Phase Gradient
 public class GradientQuality extends AbstractQuality {
+    /** {@inheritDoc}
+     * <p>
+     * For GradientQuality, it is just an ImageParameter.
+     */
     @Override
     public DParameter param()
     {
@@ -38,6 +45,7 @@ public class GradientQuality extends AbstractQuality {
         }
         return M_image;
     }
+    /** {@inheritDoc} */
     @Override
     public float[][] calculate(float[][] phase_image, int t, int z)
     {
@@ -66,8 +74,11 @@ public class GradientQuality extends AbstractQuality {
         }
         return M_result;
     }
+    /** {@inheritDoc} */
     @Override public float[][] get_result() {return M_result;}
+    /** {@inheritDoc} */
     @Override public int get_ts() {return M_image.get_value().getNFrames();}
+    /** {@inheritDoc} */
     @Override public int get_zs() {return M_image.get_value().getNSlices();}
 
     private ImageParameter M_image;

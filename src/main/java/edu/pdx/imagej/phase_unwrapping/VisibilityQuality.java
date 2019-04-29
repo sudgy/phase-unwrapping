@@ -28,11 +28,20 @@ import net.imagej.ops.OpService;
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.ImageParameter;
 
+/** VisibilityQuality is a {@link Quality} that uses the fringe visibility of
+ * the hologram used to create the phase image.  See
+ * {@link edu.pdx.imagej.fringe_visibility.FringeVisibilityOp} for more
+ * information on the fringe visibility.
+ */
 @Plugin(type = Quality.class,
         name = "Fringe Visibility",
         priority = Priority.VERY_HIGH)
 public class VisibilityQuality extends AbstractQuality {
     @Parameter private OpService P_ops;
+    /** {@inheritDoc}
+     * <p>
+     * For VisibilityQuality, it is just an ImageParameter.
+     */
     @Override
     public DParameter param()
     {
@@ -41,6 +50,7 @@ public class VisibilityQuality extends AbstractQuality {
         }
         return M_holo;
     }
+    /** {@inheritDoc} */
     @Override
     public float[][] calculate(float[][] phase_image, int t, int z)
     {
@@ -52,8 +62,11 @@ public class VisibilityQuality extends AbstractQuality {
         M_result = (float[][])P_ops.run("Fringe Visibility", (Object)data);
         return M_result;
     }
+    /** {@inheritDoc} */
     @Override public float[][] get_result() {return M_result;}
+    /** {@inheritDoc} */
     @Override public int get_ts() {return M_holo.get_value().getNFrames();}
+    /** {@inheritDoc} */
     @Override public int get_zs() {return M_holo.get_value().getNSlices();}
 
     private ImageParameter   M_holo;
