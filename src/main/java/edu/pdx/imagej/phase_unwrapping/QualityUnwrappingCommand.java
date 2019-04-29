@@ -34,8 +34,8 @@ import net.imagej.ops.OpService;
 import edu.pdx.imagej.dynamic_parameters.*;
 
 @Plugin(type = Command.class,
-        menuPath = "Plugins>DHM>Phase Unwrapping>Single Wavelength")
-public class SingleWavelengthCommand implements Command, Initializable {
+        menuPath = "Plugins>DHM>Phase Unwrapping>Quality Guided")
+public class QualityUnwrappingCommand implements Command, Initializable {
     @Parameter private OpService        P_ops;
 
     @Parameter private ImageParameter   P_phase_image;
@@ -68,7 +68,7 @@ public class SingleWavelengthCommand implements Command, Initializable {
             float[][] image = phase_image.getProcessor().getFloatArray();
             quality.calculate(image, 1, 1);
             float[][] result = (float[][])P_ops.run(
-                "Single Wavelength Phase Unwrapping",
+                "Quality Guided Phase Unwrapping",
                 image, quality, show_progress, phase_value);
             imp = new ImagePlus("Result", convert_result(result));
         }
@@ -110,7 +110,7 @@ public class SingleWavelengthCommand implements Command, Initializable {
                                                  .getProcessor(current_slice)
                                                  .getFloatArray();
                     float[][] this_result = (float[][])P_ops.run(
-                        "Single Wavelength Phase Unwrapping",
+                        "Quality Guided Phase Unwrapping",
                         image, quality, show_progress, phase_value);
                     String label = phase_image.getStack()
                                               .getSliceLabel(current_slice)

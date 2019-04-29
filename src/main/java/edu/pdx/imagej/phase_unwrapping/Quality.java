@@ -26,7 +26,7 @@ import net.imagej.ImageJPlugin;
 import edu.pdx.imagej.dynamic_parameters.DParameter;
 
 /** Quality is the interface for an algorithm that gives a quality value for
- * every pixel in an image, to be used in {@link SingleWavelengthOp}.  While it
+ * every pixel in an image, to be used in {@link QualityUnwrappingOp}.  While it
  * is possible to implement a Quality based purely on this interface, it is
  * suggested that you instead extend the {@link AbstractQuality} class, for
  * convenience.

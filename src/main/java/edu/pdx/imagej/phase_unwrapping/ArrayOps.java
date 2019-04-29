@@ -17,7 +17,7 @@
  * David Cohoe at dcohoe@pdx.edu.
  */
 
-package edu.pdx.array_ops;
+package edu.pdx.imagej.phase_unwrapping;
 
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;

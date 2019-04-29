@@ -33,10 +33,10 @@ import java.awt.Point;
 import java.util.TreeSet;
 import java.util.HashSet;
 
-/** SingleWavelengthOp is an Op that calculates single wavelength phase
+/** QualityUnwrappingOp is an Op that calculates single wavelength phase
  * unwrapping using a quality-guided unwrapping algorithm.
  * <p>
- * To run this op yourself, it has the name "Single Wavelength Phase Unwrapping"
+ * To run this op yourself, it has the name "Quality Guided Phase Unwrapping"
  * and has these parameters:
  * <ol>
  *     <li>Phase image: a <code>float[][]</code> representing the current phase
@@ -55,8 +55,8 @@ import java.util.HashSet;
  * currently unwrapped pixels with the highest quality value, and unwraps that
  * one.  This process continues until all pixels are unwrapped.
  */
-@Plugin(type = Op.class, name = "Single Wavelength Phase Unwrapping")
-public class SingleWavelengthOp extends AbstractOp {
+@Plugin(type = Op.class, name = "Quality Guided Phase Unwrapping")
+public class QualityUnwrappingOp extends AbstractOp {
     @Parameter private StatusService P_status;
     // Inputs
     @Parameter private float[][] P_phase_image;

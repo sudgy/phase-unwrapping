@@ -27,8 +27,6 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import edu.pdx.array_ops.ArrayOps;
-
 @Plugin(type = Command.class, menuPath = "Plugins>DHM>Phase Unwrapping>Double Wavelength")
 public class DoubleWavelength implements Command {
     @Parameter(label = "Phase Image 1")
