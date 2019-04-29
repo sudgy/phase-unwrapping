@@ -33,11 +33,18 @@ import edu.pdx.imagej.dynamic_parameters.DParameter;
 import edu.pdx.imagej.dynamic_parameters.HoldingParameter;
 import edu.pdx.imagej.dynamic_parameters.ChoiceParameter;
 
+/** QualityParameter is a DParameter that gets any of the {@link Quality}
+ * plugins that are found.
+ */
 @Plugin(type = DParameter.class)
 public class QualityParameter extends HoldingParameter<Quality> {
     @Parameter private QualityService P_quality_service;
 
+    /** Default constructor.  Doesn't really do anything. */
     public QualityParameter() {super("QualityBase");}
+    /** Initialize this parameter.  This shouldn't be called by user code.  It
+     * gets all of the qualities and determines what needs to be shown.
+     */
     @Override
     public void initialize()
     {
@@ -70,18 +77,29 @@ public class QualityParameter extends HoldingParameter<Quality> {
         }
         set_visibilities();
     }
+    /** See DParameter's documentation. */
     @Override
     public void read_from_dialog()
     {
         super.read_from_dialog();
         set_visibilities();
     }
+    /** See DParameter's documentation.
+     *
+     * @param c The class that is reading, usually the command that is being
+     *          run.
+     * @param name The name used for this parameter.
+     */
     @Override
     public void read_from_prefs(Class<?> c, String name)
     {
         super.read_from_prefs(c, name);
         set_visibilities();
     }
+    /** Get the quality this parameter is holding.
+     *
+     * @return The Quality that this parameter is currently holding.
+     */
     @Override
     public Quality get_value()
     {
