@@ -21,6 +21,11 @@ package edu.pdx.imagej.phase_unwrapping;
 
 import org.scijava.plugin.AbstractRichPlugin;
 
+/** AbstractQuality is just {@link Quality}, but it also extends SciJava's
+ * AbstractRichPlugin.  It is suggested that you extend this class instead of
+ * Quality, because AbstractRichPlugin defines many of the features for you
+ * already.
+ */
 public abstract class AbstractQuality
     extends AbstractRichPlugin
     implements Quality {}
