@@ -28,10 +28,17 @@ import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
 import net.imagej.ImageJService;
 
+/** QualityService is a service to get instances of {@link Quality}.
+ */
 @Plugin(type = Service.class)
 public class QualityService extends AbstractPTService<Quality> implements
     ImageJService
 {
+    /** Get an instance of every type of {@link Quality}, along with their name.
+     *
+     * @return A HashMap with quality names as keys, and an instance of that
+     *         quality as values.
+     */
     public HashMap<String, Quality> get_qualities()
     {
         HashMap<String, Quality> result = new HashMap<>();
