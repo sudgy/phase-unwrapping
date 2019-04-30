@@ -25,6 +25,26 @@ import org.scijava.plugin.Plugin;
 import net.imagej.ops.AbstractOp;
 import net.imagej.ops.Op;
 
+/** DoubleWavelengthOp is an Op that performs phase unwrapping through the
+ * double wavelength unwrapping.  However, I've noticed that it doesn't work
+ * that well, so use at your own risk.
+ * <p>
+ * To run this op yourself, it has the name "Double Wavelength Phase Unwrapping"
+ * and has these parameters:
+ * <ol>
+ *     <li>P_image1: a {@link PhaseImage} representing the first image.
+ *     <li>P_image2: a {@link PhaseImage} representing the second image.
+ *     <li>Show steps: Whether or not to show the intermediate steps used during
+ *                     the process.  These steps are the (a)-(g) images used in
+ *                     every single description of the algorithm in the
+ *                     literature.
+ * </ol>
+ * The result is a <code>float[][][]</code> that depends on whether you asked to
+ * show the steps or not.  If show steps is <code>false</code>,
+ * <code>result[0]</code> is the coarse map and <code>result[1]</code> is the
+ * fine map.  If show steps is <code>true</code>, there are seven images in the
+ * result, corresponding to the (a)-(g) images described in the literature.
+ */
 @Plugin(type = Op.class, name = "Double Wavelength Phase Unwrapping")
 public class DoubleWavelengthOp extends AbstractOp {
     // Inputs

@@ -28,6 +28,10 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import net.imagej.ops.OpService;
 
+/** This is a command that performs double-wavelength unwrapping of images and
+ * stacks using {@link DoubleWavelengthOp}.  In addition to what
+ * DoubleWavelengthOp does, this command deals with stacks of images.
+ */
 @Plugin(type = Command.class,
         menuPath = "Plugins>DHM>Phase Unwrapping>Double Wavelength")
 public class DoubleWavelengthCommand implements Command {
@@ -49,6 +53,7 @@ public class DoubleWavelengthCommand implements Command {
 
     @Parameter private OpService P_ops;
 
+    /** Run the command, computing and showing all unwrapping. */
     @Override
     public void run() {
         int width = P_phase_image1.getWidth();
