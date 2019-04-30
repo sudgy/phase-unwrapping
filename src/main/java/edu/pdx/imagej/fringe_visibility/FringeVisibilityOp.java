@@ -47,47 +47,42 @@ public class FringeVisibilityOp extends AbstractOp {
     @Override
     public void run()
     {
-        M_width = P_data.length;
-        M_height = P_data[0].length;
-        P_result = new float[M_width][M_height];
+        int width = P_data.length;
+        int height = P_data[0].length;
+        P_result = new float[width][height];
 
-        float tmax = 0;
-        float tmean = 0;
-        for (int x = 0; x < M_width; ++x) {
-            for (int y = 0; y < M_height; ++y) {
+        // Every value must be greater than zero, so we need to subtract the
+        // minimum to all of the values.
+        float original_min = Float.MAX_VALUE;
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
                 float val = P_data[x][y];
-                if (val > tmax) tmax = val;
-                tmean += val;
+                if (val < original_min) original_min = val;
             }
         }
-        tmean /= M_width * M_height;
-        for (int x = 0; x < M_width; ++x) {
-            for (int y = 0; y < M_height; ++y) {
+
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
                 float max = 0;
-                float min = 1;
-                float average = 0;
-                int i = 0;
+                float min = Float.MAX_VALUE;
                 for (int x_plus = -1; x_plus <= 1; ++x_plus) {
                     for (int y_plus = -1; y_plus <= 1; ++y_plus) {
                         int new_x = x + x_plus;
                         int new_y = y + y_plus;
                         if (   (new_x < 0)
                             || (new_y < 0)
-                            || (new_x == M_width)
-                            || (new_y == M_height)) continue;
+                            || (new_x == width)
+                            || (new_y == height)) continue;
                         float val = P_data[new_x][new_y];
-                        average += val;
+                        // Make value positive
+                        val -= original_min;
                         if (val > max) max = val;
                         if (val < min) min = val;
-                        ++i;
                     }
                 }
-                average /= i;
-                P_result[x][y] = ((max - average) / 2) / average;
+                if (max == 0 && min == 0) P_result[x][y] = 0;
+                else P_result[x][y] = (max - min) / (max + min);
             }
         }
     }
-
-    private int M_width;
-    private int M_height;
 }
