@@ -27,11 +27,6 @@ import net.imagej.ops.Op;
 
 @Plugin(type = Op.class, name = "Double Wavelength Phase Unwrapping")
 public class DoubleWavelengthOp extends AbstractOp {
-    static public class PhaseImage {
-        public float[][] phase_image;
-        public float wavelength;
-        public float phase_value;
-    }
     // Inputs
     @Parameter private PhaseImage P_image1;
     @Parameter private PhaseImage P_image2;

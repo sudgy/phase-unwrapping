@@ -83,13 +83,11 @@ public class DoubleWavelengthCommand implements Command {
                 float[][] img2 = P_phase_image2.getStack()
                                                .getProcessor(current_slice2)
                                                .getFloatArray();
-                DoubleWavelengthOp.PhaseImage image1 =
-                                            new DoubleWavelengthOp.PhaseImage();
+                PhaseImage image1 = new PhaseImage();
                 image1.phase_image = img1;
                 image1.wavelength = P_wavelength1;
                 image1.phase_value = P_phase_value;
-                DoubleWavelengthOp.PhaseImage image2 =
-                                            new DoubleWavelengthOp.PhaseImage();
+                PhaseImage image2 = new PhaseImage();
                 image2.phase_image = img2;
                 image2.wavelength = P_wavelength2;
                 image2.phase_value = P_phase_value;
