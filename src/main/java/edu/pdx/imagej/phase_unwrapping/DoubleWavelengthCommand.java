@@ -28,8 +28,9 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import net.imagej.ops.OpService;
 
-@Plugin(type = Command.class, menuPath = "Plugins>DHM>Phase Unwrapping>Double Wavelength")
-public class DoubleWavelength implements Command {
+@Plugin(type = Command.class,
+        menuPath = "Plugins>DHM>Phase Unwrapping>Double Wavelength")
+public class DoubleWavelengthCommand implements Command {
     @Parameter(label = "Phase Image 1")
     private ImagePlus M_phase_image1;
     @Parameter(label = "Wavelength 1 (nm)")
@@ -39,7 +40,10 @@ public class DoubleWavelength implements Command {
     @Parameter(label = "Wavelength 2 (nm)")
     private int M_wavelength2;
     @Parameter(label = "Pixel phase value")
-    private float M_phase = 6.2831853072f;
+    // The main reason this is not τ is because having it τ when it should be
+    // 256 makes it look good when it shouldn't, but having it 256 when it
+    // should be τ makes it look bad when it should.
+    private float M_phase = 256.0f;
     @Parameter(label = "Debug")
     private boolean M_debug = false;
     @Parameter OpService P_ops;
@@ -60,8 +64,10 @@ public class DoubleWavelength implements Command {
             }
         }
 
-        int t_size = Math.min(M_phase_image1.getNFrames(), M_phase_image2.getNFrames());
-        int z_size = Math.min(M_phase_image1.getNSlices(), M_phase_image2.getNSlices());
+        int t_size = Math.min(M_phase_image1.getNFrames(),
+                              M_phase_image2.getNFrames());
+        int z_size = Math.min(M_phase_image1.getNSlices(),
+                              M_phase_image2.getNSlices());
         int final_size = t_size * z_size;
         int i = 0;
         for (int t = 1; t <= t_size; ++t) {
@@ -72,8 +78,12 @@ public class DoubleWavelength implements Command {
                 }
                 int current_slice1 = M_phase_image1.getStackIndex(1, z, t);
                 int current_slice2 = M_phase_image2.getStackIndex(1, z, t);
-                float[][] img1 = M_phase_image1.getStack().getProcessor(current_slice1).getFloatArray();
-                float[][] img2 = M_phase_image2.getStack().getProcessor(current_slice2).getFloatArray();
+                float[][] img1 = M_phase_image1.getStack()
+                                                .getProcessor(current_slice1)
+                                                .getFloatArray();
+                float[][] img2 = M_phase_image2.getStack()
+                                               .getProcessor(current_slice2)
+                                               .getFloatArray();
                 DoubleWavelengthOp.PhaseImage image1 =
                                             new DoubleWavelengthOp.PhaseImage();
                 image1.phase_image = img1;
@@ -84,7 +94,9 @@ public class DoubleWavelength implements Command {
                 image2.phase_image = img2;
                 image2.wavelength = M_wavelength2;
                 image2.phase_value = M_phase;
-                float[][][] result = (float[][][])P_ops.run("Double Wavelength Phase Unwrapping", image1, image2, M_debug);
+                float[][][] result = (float[][][])P_ops.run(
+                    "Double Wavelength Phase Unwrapping",
+                    image1, image2, M_debug);
                 if (M_debug) {
                     coarse_stack.addSlice(new FloatProcessor(result[3]));
                     fine_stack.addSlice(new FloatProcessor(result[6]));
@@ -98,34 +110,6 @@ public class DoubleWavelength implements Command {
                 }
             }
         }
-            /*
-        for (int i = 0; i < final_size; ++i) {
-            boolean debug = M_debug && i == 0;
-            float[][] img1 = M_phase_image1.getStack().getProcessor(i + 1).getFloatArray();
-                if (debug) debug_stack.addSlice("Phase Image 1 (a)", new FloatProcessor(img1));
-            float[][] img2 = M_phase_image2.getStack().getProcessor(i + 1).getFloatArray();
-                if (debug) debug_stack.addSlice("Phase Image 2 (b)", new FloatProcessor(img2));
-            float[][] result = ArrayOps.binary(img1, img2, ArrayOps.Subtract);
-                if (debug) debug_stack.addSlice("Phase Difference (c)", new FloatProcessor(result));
-                if (debug) new ImagePlus("Phase Difference (c)", new FloatProcessor(result)).show();
-            result = ArrayOps.unary(result, a -> a < 0 ? a + M_phase : a);
-                if (debug) debug_stack.addSlice("Coarse Map (d)", new FloatProcessor(result));
-            float[][] coarse = ArrayOps.unary(result, ArrayOps.MultiplyBy(M_combined_wavelength / M_wavelength1));
-                if (debug) new ImagePlus("Coarse Map (d)", new FloatProcessor(coarse)).show();
-            coarse_stack.addSlice(new FloatProcessor(coarse));
-            result = ArrayOps.unary(coarse, a -> (int)(a / M_phase) * M_phase);
-                if (debug) debug_stack.addSlice("Round to Phase 1 (e)", new FloatProcessor(ArrayOps.unary(result, ArrayOps.MultiplyBy(M_wavelength1 / M_combined_wavelength))));
-                if (debug) new ImagePlus("Round to Phase 1 (e)", new FloatProcessor(result)).show();
-            result = ArrayOps.binary(result, img1, ArrayOps.Add);
-                if (debug) debug_stack.addSlice("Round + Phase 1 (f)", new FloatProcessor(ArrayOps.unary(result, ArrayOps.MultiplyBy(M_wavelength1 / M_combined_wavelength))));
-                if (debug) new ImagePlus("Round + Phase 1 (f)", new FloatProcessor(result)).show();
-            result = ArrayOps.binary(result, coarse, (a, b) -> Math.abs(a - b) > (M_phase / 2) ? a - M_phase * Math.signum(a - b) : a);
-                if (debug) debug_stack.addSlice("Fine Map (g)", new FloatProcessor(ArrayOps.unary(result, ArrayOps.MultiplyBy(M_wavelength1 / M_combined_wavelength))));
-                if (debug) new ImagePlus("Fine Map (g)", new FloatProcessor(result)).show();
-            fine_stack.addSlice(new FloatProcessor(result));
-            if (debug) (new ImagePlus("Test", debug_stack)).show();
-        }
-            */
         if (M_debug) {
             show_stack(debug_stack[0], "Phase Image 1 (a)", z_size, t_size);
             show_stack(debug_stack[1], "Phase Image 2 (b)", z_size, t_size);
@@ -140,9 +124,11 @@ public class DoubleWavelength implements Command {
             show_stack(fine_stack, "Fine Map", z_size, t_size);
         }
     }
-    private void show_stack(ImageStack stack, String label, int z_size, int t_size)
+    private void show_stack(ImageStack stack, String label,
+                            int z_size, int t_size)
     {
-        ImagePlus imp = IJ.createHyperStack(label, stack.getWidth(), stack.getHeight(), 1, z_size, t_size, 32);
+        ImagePlus imp = IJ.createHyperStack(
+            label, stack.getWidth(), stack.getHeight(), 1, z_size, t_size, 32);
         imp.setStack(stack);
         imp.show();
     }
