@@ -23,7 +23,9 @@ import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
 final class ArrayOps {
-    public static float[][] binary(final float[][] a1, final float[][] a2, BinaryOperator<Float> op)
+    public static float[][] binary(final float[][] a1,
+                                   final float[][] a2,
+                                   BinaryOperator<Float> op)
     {
         assert a1.length == a2.length;
         assert a1[0].length == a2[0].length;
