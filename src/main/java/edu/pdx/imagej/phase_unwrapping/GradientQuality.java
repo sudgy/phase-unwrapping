@@ -55,6 +55,12 @@ public class GradientQuality extends AbstractQuality {
                                 .getStack()
                                 .getProcessor(current_slice)
                                 .getFloatArray();
+        return calculate_with(data);
+    }
+    // For testing purposes, we want to be able to bypass the ImageParameter.
+    // This is package-private so that the tests can see this too.
+    float[][] calculate_with(float[][] data)
+    {
         M_result = new float[data.length][data[0].length];
         for (int x = 0; x < M_result.length; ++x) {
             for (int y = 0; y < M_result[0].length; ++y) {
