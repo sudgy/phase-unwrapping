@@ -52,7 +52,7 @@ public class DoubleWavelengthOp extends AbstractOp {
     @Parameter private PhaseImage P_image2;
     @Parameter private boolean P_show_steps;
     // Outputs
-    @Parameter(type = ItemIO.OUTPUT) float[][][] P_result;
+    @Parameter(type = ItemIO.OUTPUT) private float[][][] P_result;
 
     @Override
     public void run()
