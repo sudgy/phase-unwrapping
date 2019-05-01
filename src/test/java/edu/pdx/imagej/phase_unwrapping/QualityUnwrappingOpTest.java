@@ -75,7 +75,7 @@ public class QualityUnwrappingOpTest {
         assertEquals(result2[0][0], 10, "The quality should affect the path "
             + "taken for residues (2).");
     }
-    Context M_context = new Context(OpService.class, StatusService.class);
+    private Context M_context = new Context(OpService.class, StatusService.class);
 }
 
 class TestQuality extends AbstractQuality {
