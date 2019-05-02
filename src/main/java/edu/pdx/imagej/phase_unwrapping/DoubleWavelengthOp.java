@@ -64,12 +64,20 @@ public class DoubleWavelengthOp extends AbstractOp {
         int height = P_image1.phase_image[0].length;
         float phase_value = P_image1.phase_value;
         if (P_image1.phase_value != P_image2.phase_value) {
+            // If we don't copy, we change the values passed in from the call
+            // site.  We don't want that.
+            PhaseImage new_phase_image = new PhaseImage();
+            new_phase_image.wavelength = P_image2.wavelength;
+            new_phase_image.phase_value = phase_value;
+            new_phase_image.phase_image = new float[width][height];
             for (int x = 0; x < width; ++x) {
                 for (int y = 0; y < height; ++y) {
-                    P_image2.phase_image[x][y] *=
-                        (phase_value / P_image2.phase_value);
+                    new_phase_image.phase_image[x][y] =
+                        P_image2.phase_image[x][y]
+                        * phase_value / P_image2.phase_value;
                 }
             }
+            P_image2 = new_phase_image;
         }
         float[][][] result = new float[7][width][height];
         result[0] = P_image1.phase_image;

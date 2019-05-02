@@ -94,8 +94,8 @@ public class DoubleWavelengthStackOp extends AbstractOp {
                 int current_slice1 = P_phase_image1.getStackIndex(1, z, t);
                 int current_slice2 = P_phase_image2.getStackIndex(1, z, t);
                 float[][] img1 = P_phase_image1.getStack()
-                                                .getProcessor(current_slice1)
-                                                .getFloatArray();
+                                               .getProcessor(current_slice1)
+                                               .getFloatArray();
                 float[][] img2 = P_phase_image2.getStack()
                                                .getProcessor(current_slice2)
                                                .getFloatArray();
@@ -124,7 +124,7 @@ public class DoubleWavelengthStackOp extends AbstractOp {
             }
         }
         if (P_show_steps) {
-            P_result = new ImagePlus[] {
+          P_result = new ImagePlus[] {
             get_stack(debug_stack[0], "Phase Image 1 (a)", z_size, t_size),
             get_stack(debug_stack[1], "Phase Image 2 (b)", z_size, t_size),
             get_stack(debug_stack[2], "Phase Difference (c)", z_size, t_size),
@@ -132,7 +132,7 @@ public class DoubleWavelengthStackOp extends AbstractOp {
             get_stack(debug_stack[4], "Round to Phase 1 (e)", z_size, t_size),
             get_stack(debug_stack[5], "Round + Phase 1 (f)", z_size, t_size),
             get_stack(debug_stack[6], "Fine Map (g)", z_size, t_size)
-            };
+          };
         }
         else {
             P_result = new ImagePlus[] {
