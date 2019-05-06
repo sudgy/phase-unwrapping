@@ -41,14 +41,14 @@ import edu.pdx.imagej.dynamic_parameters.*;
 @Plugin(type = Command.class,
         menuPath = "Plugins>DHM>Phase Unwrapping>Quality Guided")
 public class QualityUnwrappingCommand implements Command, Initializable {
-    @Parameter private OpService        P_ops;
+    @Parameter private OpService P_ops;
 
-    @Parameter private ImageParameter   P_phase_image;
-    @Parameter private QualityParameter P_quality;
-    @Parameter private BoolParameter    P_single_frame;
-    @Parameter private DoubleParameter  P_phase_value;
-    @Parameter private ChoiceParameter  P_output_type;
-    @Parameter private BoolParameter    P_show_progress;
+    @Parameter private ImageParameter      P_phase_image;
+    @Parameter private QualityParameter    P_quality;
+    @Parameter private BoolParameter       P_single_frame;
+    @Parameter private PhaseValueParameter P_phase_value;
+    @Parameter private ChoiceParameter     P_output_type;
+    @Parameter private BoolParameter       P_show_progress;
 
     /** Initializes the dynamic parameters. */
     @Override
@@ -57,7 +57,8 @@ public class QualityUnwrappingCommand implements Command, Initializable {
         P_phase_image = new ImageParameter("Phase_Image");
         P_quality = new QualityParameter();
         P_single_frame = new BoolParameter("Single_Frame", false);
-        P_phase_value = new DoubleParameter(256.0, "Pixel_Phase_Value");
+        P_phase_value = new PhaseValueParameter("Pixel_Phase_Value",
+                                                P_phase_image);
         String[] choices = {"8-bit", "32-bit", "32-bit (radians)"};
         P_output_type = new ChoiceParameter("Output_Type", choices);
         P_show_progress = new BoolParameter("Show Progress", true);
