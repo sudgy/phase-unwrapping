@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import org.scijava.Context;
-import org.scijava.app.StatusService;
 import net.imagej.ops.OpService;
 
 public class DoubleWavelengthOpTest {
