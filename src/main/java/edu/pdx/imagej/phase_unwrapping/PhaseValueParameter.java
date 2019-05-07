@@ -55,6 +55,7 @@ public class PhaseValueParameter extends DoubleParameter {
         super(256.0, label);
         M_image_param = phase_image;
         set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
+        check_for_errors();
     }
     @Override
     public void read_from_dialog()
