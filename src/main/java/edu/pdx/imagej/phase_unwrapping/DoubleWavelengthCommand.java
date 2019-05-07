@@ -23,10 +23,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.process.FloatProcessor;
+
+import org.scijava.Initializable;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import net.imagej.ops.OpService;
+
+import edu.pdx.imagej.dynamic_parameters.*;
 
 /** This is a light wrapper around {@link DoubleWavelengthStackOp}.  The only
  * difference is that this command is meant to be used by the user while ImageJ
@@ -34,33 +38,44 @@ import net.imagej.ops.OpService;
  */
 @Plugin(type = Command.class,
         menuPath = "Plugins>DHM>Phase Unwrapping>Double Wavelength")
-public class DoubleWavelengthCommand implements Command {
-    @Parameter(label = "Phase Image 1")
-    private ImagePlus P_phase_image1;
-    @Parameter(label = "Wavelength 1")
-    private int P_wavelength1;
-    @Parameter(label = "Phase Image 2")
-    private ImagePlus P_phase_image2;
-    @Parameter(label = "Wavelength 2")
-    private int P_wavelength2;
-    // The main reason this is not τ is because having it τ when it should be
-    // 256 makes it look good when it shouldn't, but having it 256 when it
-    // should be τ makes it look bad when it should.
-    @Parameter(label = "Pixel phase value")
-    private float P_phase_value = 256.0f;
-    @Parameter(label = "Show Intermediate Steps")
-    private boolean P_show_steps = false;
-
+public class DoubleWavelengthCommand implements Command, Initializable {
     @Parameter private OpService P_ops;
+
+    @Parameter private ImageParameter      P_phase_image1;
+    @Parameter private DoubleParameter     P_wavelength1;
+    @Parameter private ImageParameter      P_phase_image2;
+    @Parameter private DoubleParameter     P_wavelength2;
+    @Parameter private PhaseValueParameter P_phase_value;
+    @Parameter private BoolParameter       P_show_steps;
+
+    /** Initializes the dynamic parameters. */
+    @Override
+    public void initialize()
+    {
+        P_phase_image1 = new ImageParameter("Phase_Image_1");
+        P_wavelength1  = new DoubleParameter(0.0, "Wavelength_1");
+        P_phase_image2 = new ImageParameter("Phase_Image_2");
+        P_wavelength2  = new DoubleParameter(0.0, "Wavelength_2");
+        P_phase_value  = new PhaseValueParameter("Pixel_Phase_Value",
+                                                 P_phase_image1);
+        P_show_steps   = new BoolParameter("Show_Intermediate_Steps", false);
+
+        P_wavelength1.set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
+        P_wavelength2.set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
+    }
 
     /** Run the command, computing and showing all unwrapping. */
     @Override
     public void run() {
         ImagePlus[] result = (ImagePlus[])P_ops.run(
             "Double Wavelength Phase Unwrapping",
-            P_phase_image1, P_wavelength1, P_phase_value,
-            P_phase_image2, P_wavelength2, P_phase_value,
-            P_show_steps);
+            P_phase_image1.get_value(),
+            P_wavelength1.get_value(),
+            P_phase_value.get_value(),
+            P_phase_image2.get_value(),
+            P_wavelength2.get_value(),
+            P_phase_value.get_value(),
+            P_show_steps.get_value());
         for (ImagePlus stack : result) stack.show();
     }
 }
