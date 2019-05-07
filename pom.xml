@@ -7,7 +7,7 @@
 
     <groupId>edu.pdx</groupId>
     <artifactId>phase_unwrapping</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>Phase Unwrapping</name>
     <description>This plugin performs phase unwrapping on images, with a focus on images produced through DHM.</description>
