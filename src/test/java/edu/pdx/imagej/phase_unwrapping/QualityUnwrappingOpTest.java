@@ -36,7 +36,7 @@ public class QualityUnwrappingOpTest {
         };
         Quality quality = new NoneQuality();
         quality.calculate(phase_image, 0, 0);
-        float[][] result = (float[][])ops.run("Quality Guided Phase Unwrapping",
+        float[][] result = (float[][])ops.run(QualityUnwrappingOp.class,
                                               phase_image, quality, false, 10);
         float[] differences = {1, 3, 3, 2, 3, 3, -2, -4, -4};
         for (int i = 0; i < 9; ++i) {
@@ -66,9 +66,9 @@ public class QualityUnwrappingOpTest {
         Quality quality2 = new TestQuality();
         quality1.calculate(quality1_values, 0, 0);
         quality2.calculate(quality2_values, 0, 0);
-        float[][] result1 =(float[][])ops.run("Quality Guided Phase Unwrapping",
+        float[][] result1 =(float[][])ops.run(QualityUnwrappingOp.class,
                                               phase_image, quality1, false, 10);
-        float[][] result2 =(float[][])ops.run("Quality Guided Phase Unwrapping",
+        float[][] result2 =(float[][])ops.run(QualityUnwrappingOp.class,
                                               phase_image, quality2, false, 10);
         assertEquals(result1[0][0], 0, "The quality should affect the path "
             + "taken for residues (1).");

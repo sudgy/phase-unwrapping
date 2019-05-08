@@ -147,7 +147,7 @@ public class DoubleWavelengthStackOpTest {
                                    PhaseImage image2,
                                    boolean show_steps)
     {
-        return (float[][][])M_ops.run("Double Wavelength Phase Unwrapping",
+        return (float[][][])M_ops.run(DoubleWavelengthOp.class,
                                       image1, image2, show_steps);
     }
     private ImagePlus[] run_stack(
@@ -155,7 +155,7 @@ public class DoubleWavelengthStackOpTest {
         ImagePlus image2, float wavelength2, float value2,
         boolean show_steps)
     {
-        return (ImagePlus[])M_ops.run("Double Wavelength Phase Unwrapping",
+        return (ImagePlus[])M_ops.run(DoubleWavelengthStackOp.class,
                                       image1, wavelength1, value1,
                                       image2, wavelength2, value2,
                                       show_steps);

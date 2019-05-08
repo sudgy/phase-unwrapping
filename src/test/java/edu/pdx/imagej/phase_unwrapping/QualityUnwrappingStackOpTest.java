@@ -46,10 +46,10 @@ public class QualityUnwrappingStackOpTest {
         Quality quality = new NoneQuality();
 
         ImagePlus single_result = (ImagePlus)ops.run(
-            "Quality Guided Phase Unwrapping",
+            QualityUnwrappingStackOp.class,
             imp, quality, false, 1, true, M_type);
         ImagePlus all_result = (ImagePlus)ops.run(
-            "Quality Guided Phase Unwrapping",
+            QualityUnwrappingStackOp.class,
             imp, quality, false, 1, false, M_type);
         assertEquals(single_result.getImageStackSize(), 1, "Using single frame "
             + "should make the image stack size one.");
@@ -76,7 +76,7 @@ public class QualityUnwrappingStackOpTest {
         Quality quality = new NoneQuality();
 
         ImagePlus result = (ImagePlus)ops.run(
-            "Quality Guided Phase Unwrapping",
+            QualityUnwrappingStackOp.class,
             imp, quality, false, 9, false, M_type);
         stack = result.getImageStack();
         for (int i = 0; i < 4; ++i) {
@@ -98,7 +98,7 @@ public class QualityUnwrappingStackOpTest {
         imp.setDimensions(1, 2, 2);
 
         TestDimensionQuality quality = new TestDimensionQuality(2, 2);
-        ops.run("Quality Guided Phase Unwrapping",
+        ops.run(QualityUnwrappingStackOp.class,
                 imp, quality, false, 1, false, M_type);
         assertEquals(quality.get_min_t(), 1, "A quality with the same size as "
             + "the image should have seen all slices (min t).");
@@ -121,7 +121,7 @@ public class QualityUnwrappingStackOpTest {
         imp.setDimensions(1, 2, 2);
 
         TestDimensionQuality quality = new TestDimensionQuality(3, 3);
-        ops.run("Quality Guided Phase Unwrapping",
+        ops.run(QualityUnwrappingStackOp.class,
                 imp, quality, false, 1, false, M_type);
         assertEquals(quality.get_min_t(), 1, "A quality with a different size "
             + "as the image should have only seen one slice (min t).");
@@ -144,7 +144,7 @@ public class QualityUnwrappingStackOpTest {
         imp.setDimensions(1, 2, 2);
 
         TestDimensionQuality quality = new TestDimensionQuality(2, 3);
-        ops.run("Quality Guided Phase Unwrapping",
+        ops.run(QualityUnwrappingStackOp.class,
                 imp, quality, false, 1, false, M_type);
         assertEquals(quality.get_min_t(), 1, "A quality with a different z size"
             + " but the same t size as the image should see all t slices "

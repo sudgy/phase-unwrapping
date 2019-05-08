@@ -40,7 +40,7 @@ public class FringeVisibilityOpTest {
             {0, 0, 0},
             {1, 1, 1}
         };
-        ops.run("Fringe Visibility", (Object)almost_nothing);
+        ops.run(FringeVisibilityOp.class, (Object)almost_nothing);
 
         float[][] nothing = {
             {0, 0, 0},
@@ -73,6 +73,6 @@ public class FringeVisibilityOpTest {
     }
     private float[][] run(OpService ops, float[][] input)
     {
-        return (float[][])ops.run("Fringe Visibility", (Object)input);
+        return (float[][])ops.run(FringeVisibilityOp.class, (Object)input);
     }
 }

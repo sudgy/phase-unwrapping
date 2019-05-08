@@ -154,7 +154,7 @@ public class DoubleWavelengthOpTest {
     }
     private float[][][] run(PhaseImage image1, PhaseImage image2, boolean steps)
     {
-        return (float[][][])M_ops.run("Double Wavelength Phase Unwrapping",
+        return (float[][][])M_ops.run(DoubleWavelengthOp.class,
                                       image1, image2, steps);
     }
     private Context M_context = new Context(OpService.class);
