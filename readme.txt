@@ -1,7 +1,7 @@
 Copyright (C) 2019 Portland State University
 Phase Unwrapping for ImageJ2 - David Cohoe
 
-Phase Unwrapping is a pluging for ImageJ2 that performs phase unwrapping on
+Phase Unwrapping is a plugin for ImageJ2 that performs phase unwrapping on
 phase images.  There are several different algorithms that may be used to
 perform this unwrapping.  Some of them also have ways extend them through
 additional plugins.

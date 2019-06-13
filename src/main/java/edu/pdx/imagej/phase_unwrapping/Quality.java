@@ -20,7 +20,6 @@
 package edu.pdx.imagej.phase_unwrapping;
 
 import org.scijava.Prioritized;
-import org.scijava.plugin.Plugin;
 import net.imagej.ImageJPlugin;
 
 import edu.pdx.imagej.dynamic_parameters.DParameter;
