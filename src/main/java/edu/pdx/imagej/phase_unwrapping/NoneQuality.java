@@ -30,9 +30,9 @@ public class NoneQuality extends AbstractQuality {
      * For NoneQuality, this just returns an array of zeros.
      */
     @Override
-    public float[][] calculate(float[][] phase_image, int t, int z)
+    public float[][] calculate(float[][] phaseImage, int t, int z)
     {
-        M_result = new float[phase_image.length][phase_image[0].length];
+        M_result = new float[phaseImage.length][phaseImage[0].length];
         return M_result;
     }
     /** {@inheritDoc}
@@ -40,7 +40,7 @@ public class NoneQuality extends AbstractQuality {
      * For NoneQuality, this just returns an array of zeros.
      */
     @Override
-    public float[][] get_result()
+    public float[][] getResult()
     {
         return M_result;
     }

@@ -30,59 +30,59 @@ import edu.pdx.imagej.dynamic_parameters.ImageParameter;
 import edu.pdx.imagej.dynamic_parameters.TestDialog;
 
 public class PhaseValueParameterTest {
-    @Test public void test_default()
+    @Test public void testDefault()
     {
-        ImageParameter big_param = new ImageParameter("", new ImagePlus[] {
+        ImageParameter bigParam = new ImageParameter("", new ImagePlus[] {
             new ImagePlus("", new FloatProcessor(new float[][]{{0, 300}}))});
-        PhaseValueParameter param = new PhaseValueParameter("", big_param);
-        assertEquals(param.get_value().doubleValue(), 256.0,
+        PhaseValueParameter param = new PhaseValueParameter("", bigParam);
+        assertEquals(param.getValue().doubleValue(), 256.0,
             "PhaseValueParameter should start with the correct default value.");
-        assertTrue(param.get_warning() != null, "If PhaseValueParameter starts "
+        assertTrue(param.getWarning() != null, "If PhaseValueParameter starts "
             + "with a bad value, it should instantly have its warning.");
     }
-    @Test public void test_bounds()
+    @Test public void testBounds()
     {
         TestDialog dialog = new TestDialog();
-        PhaseValueParameter param = new PhaseValueParameter("", M_image_param);
-        param.add_to_dialog(dialog);
+        PhaseValueParameter param = new PhaseValueParameter("", M_imageParam);
+        param.addToDialog(dialog);
 
-        dialog.get_double(0).value = -1.0;
-        param.read_from_dialog();
-        assertTrue(param.get_error() != null, "After inputting a negative "
+        dialog.getDouble(0).value = -1.0;
+        param.readFromDialog();
+        assertTrue(param.getError() != null, "After inputting a negative "
             + "number, a PhaseValueParameter should have an error.");
 
-        dialog.get_double(0).value = 0.0;
-        param.read_from_dialog();
-        assertTrue(param.get_error() != null, "After inputting zero, a "
+        dialog.getDouble(0).value = 0.0;
+        param.readFromDialog();
+        assertTrue(param.getError() != null, "After inputting zero, a "
             + "PhaseValueParameter should have an error.");
 
-        dialog.get_double(0).value = 1.0;
-        param.read_from_dialog();
-        assertTrue(param.get_error() == null, "After inputting a positive "
+        dialog.getDouble(0).value = 1.0;
+        param.readFromDialog();
+        assertTrue(param.getError() == null, "After inputting a positive "
             + "number, PhaseValueParameter should not have an error.");
     }
-    @Test public void test_warning()
+    @Test public void testWarning()
     {
         TestDialog dialog = new TestDialog();
-        PhaseValueParameter param = new PhaseValueParameter("", M_image_param);
-        param.add_to_dialog(dialog);
+        PhaseValueParameter param = new PhaseValueParameter("", M_imageParam);
+        param.addToDialog(dialog);
 
-        assertTrue(param.get_warning() == null, "If PhaseValueParameter starts "
+        assertTrue(param.getWarning() == null, "If PhaseValueParameter starts "
             + "with a good value, it should have no warning.");
 
-        dialog.get_double(0).value = 5.0;
-        param.read_from_dialog();
-        assertTrue(param.get_warning() != null, "Setting PhaseValueParameter to"
+        dialog.getDouble(0).value = 5.0;
+        param.readFromDialog();
+        assertTrue(param.getWarning() != null, "Setting PhaseValueParameter to"
             + " a bad value should make a warning.");
 
-        dialog.get_double(0).value = 300.0;
-        param.read_from_dialog();
-        assertTrue(param.get_warning() == null, "Setting PhaseValueParameter to"
+        dialog.getDouble(0).value = 300.0;
+        param.readFromDialog();
+        assertTrue(param.getWarning() == null, "Setting PhaseValueParameter to"
             + " a good value should remove a warning.");
     }
     private FloatProcessor M_processor =
         new FloatProcessor(new float[][] {{0, 200}});
     private ImagePlus M_imp = new ImagePlus("", M_processor);
-    private ImageParameter M_image_param
+    private ImageParameter M_imageParam
         = new ImageParameter("", new ImagePlus[]{M_imp});
 }

@@ -38,7 +38,7 @@ import edu.pdx.imagej.dynamic_parameters.ChoiceParameter;
  */
 @Plugin(type = DParameter.class)
 public class QualityParameter extends HoldingParameter<Quality> {
-    @Parameter private QualityService P_quality_service;
+    @Parameter private QualityService P_qualityService;
 
     /** Default constructor.  Doesn't really do anything. */
     public QualityParameter() {super("QualityBase");}
@@ -48,10 +48,10 @@ public class QualityParameter extends HoldingParameter<Quality> {
     @Override
     public void initialize()
     {
-        M_qualities = P_quality_service.get_qualities();
-        ArrayList<Entry<String, Quality>> qualities_array =
+        M_qualities = P_qualityService.getQualities();
+        ArrayList<Entry<String, Quality>> qualitiesArray =
             new ArrayList<>(M_qualities.entrySet());
-        Collections.sort(qualities_array,
+        Collections.sort(qualitiesArray,
             new Comparator<Entry<String, Quality>>() {
                 @Override
                 public int compare(Entry<String, Quality> lhs,
@@ -61,28 +61,28 @@ public class QualityParameter extends HoldingParameter<Quality> {
                 }
             }
         );
-        ArrayList<String> choices_list = new ArrayList<>();
-        for (Entry<String, Quality> entry : qualities_array) {
-            choices_list.add(entry.getKey());
+        ArrayList<String> choicesList = new ArrayList<>();
+        for (Entry<String, Quality> entry : qualitiesArray) {
+            choicesList.add(entry.getKey());
         }
-        String[] choices = new String[choices_list.size()];
-        choices = choices_list.toArray(choices);
-        M_choice = add_parameter(ChoiceParameter.class,
-                                 "Quality", choices, choices[0]);
+        String[] choices = new String[choicesList.size()];
+        choices = choicesList.toArray(choices);
+        M_choice = addParameter(new ChoiceParameter(
+                                 "Quality", choices, choices[0]));
         for (HashMap.Entry<String, Quality> entry : M_qualities.entrySet()) {
             if (entry.getValue().param() != null) {
                 M_parameters.put(entry.getKey(), entry.getValue().param());
-                add_premade_parameter(entry.getValue().param());
+                addParameter(entry.getValue().param());
             }
         }
-        set_visibilities();
+        setVisibilities();
     }
     /** See DParameter's documentation. */
     @Override
-    public void read_from_dialog()
+    public void readFromDialog()
     {
-        super.read_from_dialog();
-        set_visibilities();
+        super.readFromDialog();
+        setVisibilities();
     }
     /** See DParameter's documentation.
      *
@@ -91,28 +91,28 @@ public class QualityParameter extends HoldingParameter<Quality> {
      * @param name The name used for this parameter.
      */
     @Override
-    public void read_from_prefs(Class<?> c, String name)
+    public void readFromPrefs(Class<?> c, String name)
     {
-        super.read_from_prefs(c, name);
-        set_visibilities();
+        super.readFromPrefs(c, name);
+        setVisibilities();
     }
     /** Get the quality this parameter is holding.
      *
      * @return The Quality that this parameter is currently holding.
      */
     @Override
-    public Quality get_value()
+    public Quality getValue()
     {
-        return M_qualities.get(M_choice.get_value());
+        return M_qualities.get(M_choice.getValue());
     }
 
-    private void set_visibilities()
+    private void setVisibilities()
     {
         for (DParameter param : M_parameters.values()) {
-            param.set_new_visibility(false);
+            param.setNewVisibility(false);
         }
-        DParameter current = M_parameters.get(M_choice.get_value());
-        if (current != null) current.set_new_visibility(true);
+        DParameter current = M_parameters.get(M_choice.getValue());
+        if (current != null) current.setNewVisibility(true);
     }
 
     private ChoiceParameter             M_choice;

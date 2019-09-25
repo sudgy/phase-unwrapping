@@ -41,24 +41,24 @@ public class PhaseGradientQuality extends AbstractQuality {
      * it.
      */
     @Override
-    public void set_phase_value(float phase_value) {M_phase = phase_value;}
+    public void setPhaseValue(float phaseValue) {M_phase = phaseValue;}
     /** {@inheritDoc} */
     @Override
-    public float[][] calculate(float[][] phase_image, int t, int z)
+    public float[][] calculate(float[][] phaseImage, int t, int z)
     {
-        M_data = new float[phase_image.length][phase_image[0].length];
+        M_data = new float[phaseImage.length][phaseImage[0].length];
         for (int x = 0; x < M_data.length; ++x) {
             for (int y = 0; y < M_data[0].length; ++y) {
-                for (int x_plus = -1; x_plus <= 1; ++x_plus) {
-                    for (int y_plus = -1; y_plus <= 1; ++y_plus) {
-                        if (x_plus == 0 && y_plus == 0) continue;
-                        int new_x = x + x_plus;
-                        int new_y = y + y_plus;
-                        if (new_x == -1 || new_y == -1) continue;
-                        if (new_x == M_data.length ||
-                            new_y == M_data[0].length) continue;
-                        float difference = phase_image[x][y]
-                                           - phase_image[new_x][new_y];
+                for (int xPlus = -1; xPlus <= 1; ++xPlus) {
+                    for (int yPlus = -1; yPlus <= 1; ++yPlus) {
+                        if (xPlus == 0 && yPlus == 0) continue;
+                        int newX = x + xPlus;
+                        int newY = y + yPlus;
+                        if (newX == -1 || newY == -1) continue;
+                        if (newX == M_data.length ||
+                            newY == M_data[0].length) continue;
+                        float difference = phaseImage[x][y]
+                                           - phaseImage[newX][newY];
                         if (difference < -M_phase / 2) difference += M_phase;
                         if (difference > M_phase / 2) difference -= M_phase;
                         M_data[x][y] -= Math.abs(difference);
@@ -69,7 +69,7 @@ public class PhaseGradientQuality extends AbstractQuality {
         return M_data;
     }
     /** {@inheritDoc} */
-    @Override public float[][] get_result() {return M_data;}
+    @Override public float[][] getResult() {return M_data;}
     private float[][] M_data;
     private float M_phase;
 }

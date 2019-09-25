@@ -27,7 +27,7 @@ import org.scijava.Context;
 import net.imagej.ops.OpService;
 
 public class DoubleWavelengthOpTest {
-    @Test public void test_show_steps()
+    @Test public void testShowSteps()
     {
         // I am trying to get the craziest parameters to ensure that everything
         // will be different
@@ -40,45 +40,45 @@ public class DoubleWavelengthOpTest {
             {0, 0}
         };
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = crazy1;
+        image1.phaseImage = crazy1;
         image1.wavelength = 3.1415f + 1.618f + 2.71828f;
-        image1.phase_value = 2;
+        image1.phaseValue = 2;
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = crazy2;
+        image2.phaseImage = crazy2;
         image2.wavelength = 573;
-        image2.phase_value = 42;
+        image2.phaseValue = 42;
 
         float[][][] steps = run(image1, image2, true);
-        float[][][] no_steps = run(image1, image2, false);
+        float[][][] noSteps = run(image1, image2, false);
         for (int x = 0; x < 2; ++x) {
             for (int y = 0; y < 2; ++y) {
                 float cs = steps[3][x][y];
-                float cns = no_steps[0][x][y];
+                float cns = noSteps[0][x][y];
                 assertEquals(cs, cns, "The coarse map should be the same "
                     + "whether or not you showed steps or not.  This is at ("
                     + x + ", " + y + ").");
                 float fs = steps[6][x][y];
-                float fns = no_steps[1][x][y];
+                float fns = noSteps[1][x][y];
                 assertEquals(fs, fns, "The fine map should be the same whether "
                     + "or not you showed steps or not.  This is at (" + x + ", "
                     + y + ").");
             }
         }
     }
-    @Test public void test_same()
+    @Test public void testSame()
     {
         float[][] same = {
             {0, 4},
             {1, 2}
         };
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = same;
+        image1.phaseImage = same;
         image1.wavelength = 100;
-        image1.phase_value = 5;
+        image1.phaseValue = 5;
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = same;
+        image2.phaseImage = same;
         image2.wavelength = 120;
-        image2.phase_value = 5;
+        image2.phaseValue = 5;
 
         float[][][] steps = run(image1, image2, true);
         for (int x = 0; x < 2; ++x) {
@@ -93,20 +93,20 @@ public class DoubleWavelengthOpTest {
             }
         }
     }
-    @Test public void test_different_phase_value()
+    @Test public void testDifferentPhaseValue()
     {
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = new float[][] {{1}};
+        image1.phaseImage = new float[][] {{1}};
         image1.wavelength = 5;
-        image1.phase_value = 5;
+        image1.phaseValue = 5;
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = new float[][] {{2}};
+        image2.phaseImage = new float[][] {{2}};
         image2.wavelength = 5;
-        image2.phase_value = 5;
+        image2.phaseValue = 5;
         PhaseImage image3 = new PhaseImage();
-        image3.phase_image = new float[][] {{4}};
+        image3.phaseImage = new float[][] {{4}};
         image3.wavelength = 5;
-        image3.phase_value = 10;
+        image3.phaseValue = 10;
 
         float[][][] reference = run(image1, image2, true);
         float[][][] different = run(image1, image3, true);
@@ -115,18 +115,18 @@ public class DoubleWavelengthOpTest {
                 "At step (" + (i + 'a') + "), the values should be the same.");
         }
     }
-    @Test public void test_steps()
+    @Test public void testSteps()
     {
         float[][] phase1 = {{1}};
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = phase1;
+        image1.phaseImage = phase1;
         image1.wavelength = 2;
-        image1.phase_value = 5;
+        image1.phaseValue = 5;
         float[][] phase2 = {{2}};
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = phase2;
+        image2.phaseImage = phase2;
         image2.wavelength = 3;
-        image2.phase_value = 5;
+        image2.phaseValue = 5;
 
         // Combined wavelength is 6 (2 * 3 / (2 - 1))
 

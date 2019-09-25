@@ -50,74 +50,74 @@ public class DoubleWavelengthOp extends AbstractOp {
     // Inputs
     @Parameter private PhaseImage P_image1;
     @Parameter private PhaseImage P_image2;
-    @Parameter private boolean P_show_steps;
+    @Parameter private boolean P_showSteps;
     // Outputs
     @Parameter(type = ItemIO.OUTPUT) private float[][][] P_result;
 
     @Override
     public void run()
     {
-        float combined_wavelength =
+        float combinedWavelength =
                     (P_image1.wavelength * P_image2.wavelength) /
             Math.abs(P_image1.wavelength - P_image2.wavelength);
-        int width = P_image1.phase_image.length;
-        int height = P_image1.phase_image[0].length;
-        float phase_value = P_image1.phase_value;
-        if (P_image1.phase_value != P_image2.phase_value) scale_image2();
+        int width = P_image1.phaseImage.length;
+        int height = P_image1.phaseImage[0].length;
+        float phaseValue = P_image1.phaseValue;
+        if (P_image1.phaseValue != P_image2.phaseValue) scaleImage2();
 
         float[][][] result = new float[7][width][height];
-        result[0] = P_image1.phase_image;
-        result[1] = P_image2.phase_image;
-        result[2] = subtract_images(P_image1.phase_image, P_image2.phase_image);
-        result[3] = create_coarse_from_difference(result[2], phase_value,
-                                      combined_wavelength, P_image1.wavelength);
-        result[4] = round_to(result[3], phase_value);
-        result[5] = add_images(result[4], P_image1.phase_image);
-        result[6] = bring_close_to(result[5], result[3], phase_value);
-        if (P_show_steps) P_result = result;
+        result[0] = P_image1.phaseImage;
+        result[1] = P_image2.phaseImage;
+        result[2] = subtractImages(P_image1.phaseImage, P_image2.phaseImage);
+        result[3] = createCoarseFromDifference(result[2], phaseValue,
+                                      combinedWavelength, P_image1.wavelength);
+        result[4] = roundTo(result[3], phaseValue);
+        result[5] = addImages(result[4], P_image1.phaseImage);
+        result[6] = bringCloseTo(result[5], result[3], phaseValue);
+        if (P_showSteps) P_result = result;
         else P_result = new float[][][] {result[3], result[6]};
     }
-    private void scale_image2()
+    private void scaleImage2()
     {
-        int width = P_image1.phase_image.length;
-        int height = P_image1.phase_image[0].length;
-        float phase_value = P_image1.phase_value;
+        int width = P_image1.phaseImage.length;
+        int height = P_image1.phaseImage[0].length;
+        float phaseValue = P_image1.phaseValue;
         // If we don't copy, we change the values passed in from the call
         // site.  We don't want that.
-        PhaseImage new_phase_image = new PhaseImage();
-        new_phase_image.wavelength = P_image2.wavelength;
-        new_phase_image.phase_value = phase_value;
-        new_phase_image.phase_image = new float[width][height];
+        PhaseImage newPhaseImage = new PhaseImage();
+        newPhaseImage.wavelength = P_image2.wavelength;
+        newPhaseImage.phaseValue = phaseValue;
+        newPhaseImage.phaseImage = new float[width][height];
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                new_phase_image.phase_image[x][y] =
-                    P_image2.phase_image[x][y]
-                    * phase_value / P_image2.phase_value;
+                newPhaseImage.phaseImage[x][y] =
+                    P_image2.phaseImage[x][y]
+                    * phaseValue / P_image2.phaseValue;
             }
         }
-        P_image2 = new_phase_image;
+        P_image2 = newPhaseImage;
     }
-    static private float[][] subtract_images(float[][] image1, float[][] image2)
+    static private float[][] subtractImages(float[][] image1, float[][] image2)
     {
         return ArrayOps.binary(image1, image2, ArrayOps.Subtract);
     }
-    static private float[][] create_coarse_from_difference(
-        float[][] difference, float phase_value,
-        float combined_wavelength, float wavelength1)
+    static private float[][] createCoarseFromDifference(
+        float[][] difference, float phaseValue,
+        float combinedWavelength, float wavelength1)
     {
         return ArrayOps.unary(
-            ArrayOps.unary(difference, a -> a < 0 ? a + phase_value : a),
-            ArrayOps.MultiplyBy(combined_wavelength / wavelength1));
+            ArrayOps.unary(difference, a -> a < 0 ? a + phaseValue : a),
+            ArrayOps.MultiplyBy(combinedWavelength / wavelength1));
     }
-    static private float[][] round_to(float[][] image, float round)
+    static private float[][] roundTo(float[][] image, float round)
     {
         return ArrayOps.unary(image, a -> (int)(a / round) * round);
     }
-    static private float[][] add_images(float[][] image1, float[][] image2)
+    static private float[][] addImages(float[][] image1, float[][] image2)
     {
         return ArrayOps.binary(image1, image2, ArrayOps.Add);
     }
-    static private float[][] bring_close_to(float[][] from,
+    static private float[][] bringCloseTo(float[][] from,
                                             float[][] to,
                                             float threshold)
     {

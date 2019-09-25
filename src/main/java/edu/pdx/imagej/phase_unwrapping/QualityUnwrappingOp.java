@@ -59,10 +59,10 @@ import java.util.HashSet;
 public class QualityUnwrappingOp extends AbstractOp {
     @Parameter private StatusService P_status;
     // Inputs
-    @Parameter private float[][] P_phase_image;
+    @Parameter private float[][] P_phaseImage;
     @Parameter private Quality   P_quality;
-    @Parameter private boolean   P_show_progress;
-    @Parameter private float     P_phase_value;
+    @Parameter private boolean   P_showProgress;
+    @Parameter private float     P_phaseValue;
     // Outputs
     @Parameter(type = ItemIO.OUTPUT) float[][] P_result;
 
@@ -72,7 +72,7 @@ public class QualityUnwrappingOp extends AbstractOp {
     private static class QPoint implements Comparable<QPoint> {
         public Point p = new Point(); // The actual point value of this QPoint
         public float value; // The quality value for this pixel
-        public Point p_from; // The already-unwrapped pixel orthogonally
+        public Point pFrom; // The already-unwrapped pixel orthogonally
                              // adjacent to this one that has the highest
                              // quality.  It will be null until a pixel next to
                              // it has been unwrapped.
@@ -101,80 +101,80 @@ public class QualityUnwrappingOp extends AbstractOp {
     private int M_height;
     // Points on the border of what has been unwrapped, that will be unwrapped
     // next
-    private TreeSet<QPoint> M_outside_points = new TreeSet<QPoint>();
+    private TreeSet<QPoint> M_outsidePoints = new TreeSet<QPoint>();
     // Points that have already been unwrapped
-    private HashSet<Point> M_done_points = new HashSet<Point>();
+    private HashSet<Point> M_donePoints = new HashSet<Point>();
     private QPoint[][] M_quality;
 
     @Override
     public void run()
     {
-        M_width = P_phase_image.length;
-        M_height = P_phase_image[0].length;
+        M_width = P_phaseImage.length;
+        M_height = P_phaseImage[0].length;
         P_result = new float[M_width][M_height];
-        process_quality();
+        processQuality();
 
-        Point current_point = new Point(M_width / 2, M_height / 2);
-        set_value(P_phase_image[current_point.x][current_point.y],
-                  current_point);
+        Point currentPoint = new Point(M_width / 2, M_height / 2);
+        setValue(P_phaseImage[currentPoint.x][currentPoint.y],
+                  currentPoint);
 
         ImagePlus steps = null;
-        if (P_show_progress) steps = new ImagePlus("Partial Result");
+        if (P_showProgress) steps = new ImagePlus("Partial Result");
 
-        main_loop(steps, current_point);
+        mainLoop(steps, currentPoint);
 
         if (steps != null) {
             steps.changes = false;
             steps.close();
         }
     }
-    private void set_value(float value, Point point)
+    private void setValue(float value, Point point)
     {
         P_result[point.x][point.y] = value;
-        M_done_points.add(point);
-        add_outside_points(point);
+        M_donePoints.add(point);
+        addOutsidePoints(point);
     }
     // The main loop does these things, in this order:
     //  - Show progress if needed
     //  - Get point of highest quality
     //  - Unwrap that pixel
     //  - Set the pixel value and update state
-    private void main_loop(ImagePlus steps, Point current_point)
+    private void mainLoop(ImagePlus steps, Point currentPoint)
     {
-        while (M_done_points.size() < M_width * M_height) {
+        while (M_donePoints.size() < M_width * M_height) {
             // Show progress if needed
-            if (M_done_points.size() % 50000 == 0) {
-                P_status.showProgress(M_done_points.size(), M_width*M_height);
-                if (P_show_progress) {
+            if (M_donePoints.size() % 50000 == 0) {
+                P_status.showProgress(M_donePoints.size(), M_width*M_height);
+                if (P_showProgress) {
                     steps.setProcessor(new FloatProcessor(P_result));
                     steps.show();
                 }
             }
             // Get point of highest quality
-            QPoint new_point = M_outside_points.pollLast();
-            assert new_point != null;
+            QPoint newPoint = M_outsidePoints.pollLast();
+            assert newPoint != null;
             // Unwrap that pixel
-            current_point = new_point.p;
-            Point from_point = new_point.p_from;
-            assert from_point != null;
-            float current_val = P_phase_image[current_point.x][current_point.y];
-            float from_val = P_result[from_point.x][from_point.y];
-            if (current_val != from_val) {
-                from_val -= current_val;
-                from_val /= P_phase_value;
-                from_val = Math.round(from_val);
-                from_val *= P_phase_value;
-                current_val += from_val;
+            currentPoint = newPoint.p;
+            Point fromPoint = newPoint.pFrom;
+            assert fromPoint != null;
+            float currentVal = P_phaseImage[currentPoint.x][currentPoint.y];
+            float fromVal = P_result[fromPoint.x][fromPoint.y];
+            if (currentVal != fromVal) {
+                fromVal -= currentVal;
+                fromVal /= P_phaseValue;
+                fromVal = Math.round(fromVal);
+                fromVal *= P_phaseValue;
+                currentVal += fromVal;
             }
             // Set the pixel value and update state
-            set_value(current_val, current_point);
+            setValue(currentVal, currentPoint);
         }
     }
     // Set the values of M_quality based on P_quality
-    private void process_quality()
+    private void processQuality()
     {
-        M_quality = new QPoint[P_phase_image.length][P_phase_image[0].length];
-        float[][] quality = P_quality.get_result();
+        M_quality = new QPoint[P_phaseImage.length][P_phaseImage[0].length];
+        float[][] quality = P_quality.getResult();
         for (int x = 0; x < M_quality.length; ++x) {
             for (int y = 0; y < M_quality[0].length; ++y) {
                 M_quality[x][y] = new QPoint();
@@ -184,51 +184,51 @@ public class QualityUnwrappingOp extends AbstractOp {
             }
         }
     }
-    // Add all of the points orthogonally adjacent to p to M_outside_points
+    // Add all of the points orthogonally adjacent to p to M_outsidePoints
     // This function just determines which points need to be added, and then
-    // passes them to maybe_add_point
-    private void add_outside_points(Point p)
+    // passes them to maybeAddPoint
+    private void addOutsidePoints(Point p)
     {
-        Point new_point = new Point();
+        Point newPoint = new Point();
         if (p.x > 0) {
-            new_point.x = p.x - 1;
-            new_point.y = p.y;
-            maybe_add_point(new_point, p);
+            newPoint.x = p.x - 1;
+            newPoint.y = p.y;
+            maybeAddPoint(newPoint, p);
         }
         if (p.y > 0) {
-            new_point.x = p.x;
-            new_point.y = p.y - 1;
-            maybe_add_point(new_point, p);
+            newPoint.x = p.x;
+            newPoint.y = p.y - 1;
+            maybeAddPoint(newPoint, p);
         }
         if (p.x < M_width - 1) {
-            new_point.x = p.x + 1;
-            new_point.y = p.y;
-            maybe_add_point(new_point, p);
+            newPoint.x = p.x + 1;
+            newPoint.y = p.y;
+            maybeAddPoint(newPoint, p);
         }
         if (p.y < M_height - 1) {
-            new_point.x = p.x;
-            new_point.y = p.y + 1;
-            maybe_add_point(new_point, p);
+            newPoint.x = p.x;
+            newPoint.y = p.y + 1;
+            maybeAddPoint(newPoint, p);
         }
     }
     // Add this point, unless it has already been added.
-    private void maybe_add_point(Point p, Point p_from)
+    private void maybeAddPoint(Point p, Point pFrom)
     {
         // If it hasn't already been unwrapped
-        if (!M_done_points.contains(p)) {
+        if (!M_donePoints.contains(p)) {
             QPoint qp = M_quality[p.x][p.y];
             // If it hasn't been added already
-            if (qp.p_from == null) {
-                qp.p_from = p_from;
-                M_outside_points.add(qp);
+            if (qp.pFrom == null) {
+                qp.pFrom = pFrom;
+                M_outsidePoints.add(qp);
             }
             // If it has been added already, figure out which from point has the
             // best quality.
             else {
-                QPoint old_qp_from = M_quality[qp.p_from.x][qp.p_from.y];
-                QPoint new_qp_from = M_quality[p_from.x][p_from.y];
-                if (new_qp_from.value > old_qp_from.value) {
-                    qp.p_from = p_from;
+                QPoint oldQpFrom = M_quality[qp.pFrom.x][qp.pFrom.y];
+                QPoint newQpFrom = M_quality[pFrom.x][pFrom.y];
+                if (newQpFrom.value > oldQpFrom.value) {
+                    qp.pFrom = pFrom;
                 }
             }
         }

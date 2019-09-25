@@ -28,16 +28,16 @@ import org.scijava.app.StatusService;
 import net.imagej.ops.OpService;
 
 public class QualityUnwrappingOpTest {
-    @Test public void test_normal_unwrapping()
+    @Test public void testNormalUnwrapping()
     {
         OpService ops = M_context.getService(OpService.class);
-        float[][] phase_image = {
+        float[][] phaseImage = {
             {0, 1, 4, 7, 9, 2, 5, 3, 9, 5}
         };
         Quality quality = new NoneQuality();
-        quality.calculate(phase_image, 0, 0);
+        quality.calculate(phaseImage, 0, 0);
         float[][] result = (float[][])ops.run(QualityUnwrappingOp.class,
-                                              phase_image, quality, false, 10);
+                                              phaseImage, quality, false, 10);
         float[] differences = {1, 3, 3, 2, 3, 3, -2, -4, -4};
         for (int i = 0; i < 9; ++i) {
             float diff = result[0][i + 1] - result[0][i];
@@ -45,10 +45,10 @@ public class QualityUnwrappingOpTest {
                 + "the correct values for the differences between values.");
         }
     }
-    @Test public void test_quality()
+    @Test public void testQuality()
     {
         OpService ops = M_context.getService(OpService.class);
-        float[][] phase_image = {
+        float[][] phaseImage = {
             {0, 3},
             {8, 5}
         };
@@ -67,9 +67,9 @@ public class QualityUnwrappingOpTest {
         quality1.calculate(quality1_values, 0, 0);
         quality2.calculate(quality2_values, 0, 0);
         float[][] result1 =(float[][])ops.run(QualityUnwrappingOp.class,
-                                              phase_image, quality1, false, 10);
+                                              phaseImage, quality1, false, 10);
         float[][] result2 =(float[][])ops.run(QualityUnwrappingOp.class,
-                                              phase_image, quality2, false, 10);
+                                              phaseImage, quality2, false, 10);
         assertEquals(result1[0][0], 0, "The quality should affect the path "
             + "taken for residues (1).");
         assertEquals(result2[0][0], 10, "The quality should affect the path "
@@ -80,12 +80,12 @@ public class QualityUnwrappingOpTest {
 
 class TestQuality extends AbstractQuality {
     @Override
-    public float[][] calculate(float[][] phase_image, int t, int z)
+    public float[][] calculate(float[][] phaseImage, int t, int z)
     {
-        M_result = phase_image;
+        M_result = phaseImage;
         return M_result;
     }
-    public float[][] get_result()
+    public float[][] getResult()
     {
         return M_result;
     }

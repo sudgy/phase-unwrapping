@@ -54,94 +54,94 @@ import net.imagej.ops.OpService;
 public class DoubleWavelengthStackOp extends AbstractOp {
     @Parameter private OpService P_ops;
     // Inputs
-    @Parameter private ImagePlus P_phase_image1;
+    @Parameter private ImagePlus P_phaseImage1;
     @Parameter private float     P_wavelength1;
-    @Parameter private float     P_phase_value1;
-    @Parameter private ImagePlus P_phase_image2;
+    @Parameter private float     P_phaseValue1;
+    @Parameter private ImagePlus P_phaseImage2;
     @Parameter private float     P_wavelength2;
-    @Parameter private float     P_phase_value2;
-    @Parameter private boolean   P_show_steps;
+    @Parameter private float     P_phaseValue2;
+    @Parameter private boolean   P_showSteps;
     // Outputs
     @Parameter(type = ItemIO.OUTPUT) private ImagePlus[] P_result;
 
     @Override
     public void run()
     {
-        int width = P_phase_image1.getWidth();
-        int height = P_phase_image1.getHeight();
-        ImageStack[] stacks = P_show_steps ? new ImageStack[7] :
+        int width = P_phaseImage1.getWidth();
+        int height = P_phaseImage1.getHeight();
+        ImageStack[] stacks = P_showSteps ? new ImageStack[7] :
                                              new ImageStack[2];
-        for (int i = 0; i < (P_show_steps ? 7 : 2); ++i) {
+        for (int i = 0; i < (P_showSteps ? 7 : 2); ++i) {
             stacks[i] = new ImageStack(width, height);
         }
 
-        int t_size = Math.min(P_phase_image1.getNFrames(),
-                              P_phase_image2.getNFrames());
-        int z_size = Math.min(P_phase_image1.getNSlices(),
-                              P_phase_image2.getNSlices());
-        int final_size = t_size * z_size;
+        int tSize = Math.min(P_phaseImage1.getNFrames(),
+                              P_phaseImage2.getNFrames());
+        int zSize = Math.min(P_phaseImage1.getNSlices(),
+                              P_phaseImage2.getNSlices());
+        int finalSize = tSize * zSize;
         int i = 0;
-        for (int t = 1; t <= t_size; ++t) {
-            for (int z = 1; z <= z_size; ++z) {
-                if (final_size > 1) {
-                    IJ.showProgress(i, final_size);
+        for (int t = 1; t <= tSize; ++t) {
+            for (int z = 1; z <= zSize; ++z) {
+                if (finalSize > 1) {
+                    IJ.showProgress(i, finalSize);
                     ++i;
                 }
-                compute_slice(stacks, t, z);
+                computeSlice(stacks, t, z);
             }
         }
-        show_result(stacks, z_size, t_size);
+        showResult(stacks, zSize, tSize);
     }
-    private void compute_slice(ImageStack[] stacks, int t, int z)
+    private void computeSlice(ImageStack[] stacks, int t, int z)
     {
-        int current_slice1 = P_phase_image1.getStackIndex(1, z, t);
-        int current_slice2 = P_phase_image2.getStackIndex(1, z, t);
-        float[][] img1 = P_phase_image1.getStack()
-                                       .getProcessor(current_slice1)
+        int currentSlice1 = P_phaseImage1.getStackIndex(1, z, t);
+        int currentSlice2 = P_phaseImage2.getStackIndex(1, z, t);
+        float[][] img1 = P_phaseImage1.getStack()
+                                       .getProcessor(currentSlice1)
                                        .getFloatArray();
-        float[][] img2 = P_phase_image2.getStack()
-                                       .getProcessor(current_slice2)
+        float[][] img2 = P_phaseImage2.getStack()
+                                       .getProcessor(currentSlice2)
                                        .getFloatArray();
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = img1;
+        image1.phaseImage = img1;
         image1.wavelength = P_wavelength1;
-        image1.phase_value = P_phase_value1;
+        image1.phaseValue = P_phaseValue1;
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = img2;
+        image2.phaseImage = img2;
         image2.wavelength = P_wavelength2;
-        image2.phase_value = P_phase_value2;
+        image2.phaseValue = P_phaseValue2;
         float[][][] result = (float[][][])P_ops.run(
             "Double Wavelength Phase Unwrapping",
-        image1, image2, P_show_steps);
+        image1, image2, P_showSteps);
         for (int j = 0; j < result.length; ++j) {
             stacks[j].addSlice(new FloatProcessor(result[j]));
         }
     }
-    private void show_result(ImageStack[] stacks, int z_size, int t_size)
+    private void showResult(ImageStack[] stacks, int zSize, int tSize)
     {
-        if (P_show_steps) {
+        if (P_showSteps) {
             P_result = new ImagePlus[] {
-                get_stack(stacks[0], "Phase Image 1 (a)", z_size, t_size),
-                get_stack(stacks[1], "Phase Image 2 (b)", z_size, t_size),
-                get_stack(stacks[2], "Phase Difference (c)", z_size, t_size),
-                get_stack(stacks[3], "Coarse Map (d)", z_size, t_size),
-                get_stack(stacks[4], "Round to Phase 1 (e)", z_size, t_size),
-                get_stack(stacks[5], "Round + Phase 1 (f)", z_size, t_size),
-                get_stack(stacks[6], "Fine Map (g)", z_size, t_size)
+                getStack(stacks[0], "Phase Image 1 (a)", zSize, tSize),
+                getStack(stacks[1], "Phase Image 2 (b)", zSize, tSize),
+                getStack(stacks[2], "Phase Difference (c)", zSize, tSize),
+                getStack(stacks[3], "Coarse Map (d)", zSize, tSize),
+                getStack(stacks[4], "Round to Phase 1 (e)", zSize, tSize),
+                getStack(stacks[5], "Round + Phase 1 (f)", zSize, tSize),
+                getStack(stacks[6], "Fine Map (g)", zSize, tSize)
             };
         }
         else {
             P_result = new ImagePlus[] {
-                get_stack(stacks[0], "Coarse Map", z_size, t_size),
-                get_stack(stacks[1], "Fine Map", z_size, t_size)
+                getStack(stacks[0], "Coarse Map", zSize, tSize),
+                getStack(stacks[1], "Fine Map", zSize, tSize)
             };
         }
     }
-    private ImagePlus get_stack(ImageStack stack, String label,
-                                int z_size, int t_size)
+    private ImagePlus getStack(ImageStack stack, String label,
+                                int zSize, int tSize)
     {
         ImagePlus imp = IJ.createHyperStack(
-            label, stack.getWidth(), stack.getHeight(), 1, z_size, t_size, 32);
+            label, stack.getWidth(), stack.getHeight(), 1, zSize, tSize, 32);
         imp.setStack(stack);
         return imp;
     }

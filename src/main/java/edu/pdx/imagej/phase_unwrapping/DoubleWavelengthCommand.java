@@ -41,27 +41,27 @@ import edu.pdx.imagej.dynamic_parameters.*;
 public class DoubleWavelengthCommand implements Command, Initializable {
     @Parameter private OpService P_ops;
 
-    @Parameter private ImageParameter      P_phase_image1;
+    @Parameter private ImageParameter      P_phaseImage1;
     @Parameter private DoubleParameter     P_wavelength1;
-    @Parameter private ImageParameter      P_phase_image2;
+    @Parameter private ImageParameter      P_phaseImage2;
     @Parameter private DoubleParameter     P_wavelength2;
-    @Parameter private PhaseValueParameter P_phase_value;
-    @Parameter private BoolParameter       P_show_steps;
+    @Parameter private PhaseValueParameter P_phaseValue;
+    @Parameter private BoolParameter       P_showSteps;
 
     /** Initializes the dynamic parameters. */
     @Override
     public void initialize()
     {
-        P_phase_image1 = new ImageParameter("Phase_Image_1");
+        P_phaseImage1 = new ImageParameter("Phase_image_1");
         P_wavelength1  = new DoubleParameter(0.0, "Wavelength_1");
-        P_phase_image2 = new ImageParameter("Phase_Image_2");
+        P_phaseImage2 = new ImageParameter("Phase_image_2");
         P_wavelength2  = new DoubleParameter(0.0, "Wavelength_2");
-        P_phase_value  = new PhaseValueParameter("Pixel_Phase_Value",
-                                                 P_phase_image1);
-        P_show_steps   = new BoolParameter("Show_Intermediate_Steps", false);
+        P_phaseValue  = new PhaseValueParameter("Pixel_phase_value",
+                                                 P_phaseImage1);
+        P_showSteps   = new BoolParameter("Show_intermediate_steps", false);
 
-        P_wavelength1.set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
-        P_wavelength2.set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
+        P_wavelength1.setBounds(Double.MIN_VALUE, Double.MAX_VALUE);
+        P_wavelength2.setBounds(Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     /** Run the command, computing and showing all unwrapping. */
@@ -69,13 +69,13 @@ public class DoubleWavelengthCommand implements Command, Initializable {
     public void run() {
         ImagePlus[] result = (ImagePlus[])P_ops.run(
             "Double Wavelength Phase Unwrapping",
-            P_phase_image1.get_value(),
-            P_wavelength1.get_value(),
-            P_phase_value.get_value(),
-            P_phase_image2.get_value(),
-            P_wavelength2.get_value(),
-            P_phase_value.get_value(),
-            P_show_steps.get_value());
+            P_phaseImage1.getValue(),
+            P_wavelength1.getValue(),
+            P_phaseValue.getValue(),
+            P_phaseImage2.getValue(),
+            P_wavelength2.getValue(),
+            P_phaseValue.getValue(),
+            P_showSteps.getValue());
         for (ImagePlus stack : result) stack.show();
     }
 }

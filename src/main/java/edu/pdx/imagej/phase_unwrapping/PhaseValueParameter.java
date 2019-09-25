@@ -47,46 +47,46 @@ public class PhaseValueParameter extends DoubleParameter {
      *
      * @param label The label to be used.  It is passed directly to
      *              DoubleParameter's constructor.
-     * @param phase_image The phase image that this parameter is supposed to be
+     * @param phaseImage The phase image that this parameter is supposed to be
      *                    the phase value of.
      */
-    public PhaseValueParameter(String label, ImageParameter phase_image)
+    public PhaseValueParameter(String label, ImageParameter phaseImage)
     {
         super(256.0, label);
-        M_image_param = phase_image;
-        set_bounds(Double.MIN_VALUE, Double.MAX_VALUE);
-        check_for_errors();
+        M_imageParam = phaseImage;
+        setBounds(Double.MIN_VALUE, Double.MAX_VALUE);
+        checkForErrors();
     }
     @Override
-    public void read_from_dialog()
+    public void readFromDialog()
     {
-        super.read_from_dialog();
-        check_for_errors();
+        super.readFromDialog();
+        checkForErrors();
     }
     @Override
-    public void read_from_prefs(Class<?> c, String name)
+    public void readFromPrefs(Class<?> c, String name)
     {
-        super.read_from_prefs(c, name);
-        check_for_errors();
+        super.readFromPrefs(c, name);
+        checkForErrors();
     }
-    private void check_for_errors()
+    private void checkForErrors()
     {
-        if (M_image_param.get_value() != M_image) {
-            M_image = M_image_param.get_value();
+        if (M_imageParam.getValue() != M_image) {
+            M_image = M_imageParam.getValue();
             ImageStatistics stats = M_image.getStatistics();
-            M_min_value = (float)(stats.max - stats.min);
+            M_minValue = (float)(stats.max - stats.min);
         }
-        if (get_value() < M_min_value) {
-            set_warning(DParameter.display_label(label()) + " is less than the "
+        if (getValue() < M_minValue) {
+            setWarning(DParameter.displayLabel(label()) + " is less than the "
                 + "range of values present in the image " + M_image.getTitle()
                 + ".");
         }
         else {
-            set_warning(null);
+            setWarning(null);
         }
     }
 
-    private ImageParameter M_image_param;
+    private ImageParameter M_imageParam;
     private ImagePlus      M_image;
-    private float          M_min_value;
+    private float          M_minValue;
 }

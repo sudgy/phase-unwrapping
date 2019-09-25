@@ -39,7 +39,7 @@ public class QualityService extends AbstractPTService<Quality> implements
      * @return A HashMap with quality names as keys, and an instance of that
      *         quality as values.
      */
-    public HashMap<String, Quality> get_qualities()
+    public HashMap<String, Quality> getQualities()
     {
         HashMap<String, Quality> result = new HashMap<>();
         for (HashMap.Entry<String, PluginInfo<Quality>> entry :

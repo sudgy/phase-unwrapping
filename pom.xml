@@ -7,7 +7,7 @@
 
     <groupId>edu.pdx</groupId>
     <artifactId>phase_unwrapping</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
 
     <name>Phase Unwrapping</name>
     <description>This plugin performs phase unwrapping on images, with a focus on images produced through DHM.</description>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>edu.pdx</groupId>
             <artifactId>dynamic_parameters</artifactId>
-            <version>2.0.4</version>
+            <version>3.0</version>
         </dependency>
     </dependencies>
     <repositories>

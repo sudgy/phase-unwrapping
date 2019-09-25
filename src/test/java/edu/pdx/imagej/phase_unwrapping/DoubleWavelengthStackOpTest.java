@@ -31,15 +31,15 @@ import org.scijava.Context;
 import net.imagej.ops.OpService;
 
 public class DoubleWavelengthStackOpTest {
-    @Test public void test_correct_result_no_steps()
+    @Test public void testCorrectResultNoSteps()
     {
-        test_correct_result_impl(false);
+        testCorrectResultImpl(false);
     }
-    @Test public void test_correct_result_steps()
+    @Test public void testCorrectResultSteps()
     {
-        test_correct_result_impl(true);
+        testCorrectResultImpl(true);
     }
-    private void test_correct_result_impl(boolean show_steps)
+    private void testCorrectResultImpl(boolean showSteps)
     {
         // These are taken from DoubleWavelengthOpTest
         float[][] crazy1 = {
@@ -51,21 +51,21 @@ public class DoubleWavelengthStackOpTest {
             {0, 0}
         };
         PhaseImage image1 = new PhaseImage();
-        image1.phase_image = crazy1;
+        image1.phaseImage = crazy1;
         image1.wavelength = 3.1415f + 1.618f + 2.71828f;
-        image1.phase_value = 2;
+        image1.phaseValue = 2;
         PhaseImage image2 = new PhaseImage();
-        image2.phase_image = crazy2;
+        image2.phaseImage = crazy2;
         image2.wavelength = 573;
-        image2.phase_value = 42;
+        image2.phaseValue = 42;
 
-        float[][][] array = run_single(image1, image2, show_steps);
-        ImagePlus[] stack = run_stack(
+        float[][][] array = runSingle(image1, image2, showSteps);
+        ImagePlus[] stack = runStack(
             new ImagePlus("", new FloatProcessor(crazy1)),
-            image1.wavelength, image1.phase_value,
+            image1.wavelength, image1.phaseValue,
             new ImagePlus("", new FloatProcessor(crazy2)),
-            image2.wavelength, image2.phase_value,
-            show_steps);
+            image2.wavelength, image2.phaseValue,
+            showSteps);
         assertEquals(array.length, stack.length, "Running "
             + "DoubleWavelengthStackOp should produce the same amount of "
             + "results as running DoubleWavelengthOp.");
@@ -81,7 +81,7 @@ public class DoubleWavelengthStackOpTest {
             }
         }
     }
-    @Test public void test_inequal_sizes()
+    @Test public void testInequalSizes()
     {
         ImageStack stack1 = new ImageStack(1, 1);
         for (int i = 0; i < 4; ++i) {
@@ -97,41 +97,41 @@ public class DoubleWavelengthStackOpTest {
         ImagePlus imp2 = new ImagePlus("", stack2);
         imp2.setDimensions(1, 3, 3);
 
-        ImagePlus[] stacks = run_stack(imp1, 5, 256, imp2, 6, 256, false);
+        ImagePlus[] stacks = runStack(imp1, 5, 256, imp2, 6, 256, false);
 
         for (int t = 0; t < 2; ++t) {
             for (int z = 0; z < 2; ++z) {
                 PhaseImage image1 = new PhaseImage();
-                int current_slice1 = imp1.getStackIndex(1, z, t);
-                image1.phase_image = imp1.getStack()
-                                         .getProcessor(current_slice1)
+                int currentSlice1 = imp1.getStackIndex(1, z, t);
+                image1.phaseImage = imp1.getStack()
+                                         .getProcessor(currentSlice1)
                                          .getFloatArray();
                 image1.wavelength = 5;
-                image1.phase_value = 256;
+                image1.phaseValue = 256;
                 PhaseImage image2 = new PhaseImage();
-                int current_slice2 = imp2.getStackIndex(1, z, t);
-                image2.phase_image = imp2.getStack()
-                                         .getProcessor(current_slice2)
+                int currentSlice2 = imp2.getStackIndex(1, z, t);
+                image2.phaseImage = imp2.getStack()
+                                         .getProcessor(currentSlice2)
                                          .getFloatArray();
                 image2.wavelength = 6;
-                image2.phase_value = 256;
+                image2.phaseValue = 256;
 
-                float[][][] arrays = run_single(image1, image2, false);
+                float[][][] arrays = runSingle(image1, image2, false);
 
-                test_inequal_sizes_internal(stacks, arrays, t, z);
+                testInequalSizesInternal(stacks, arrays, t, z);
             }
         }
     }
-    private void test_inequal_sizes_internal(ImagePlus[] stacks,
+    private void testInequalSizesInternal(ImagePlus[] stacks,
                                              float[][][] arrays,
                                              int t, int z)
     {
         for (int i = 0; i < stacks.length; ++i) {
             for (int x = 0; x < arrays[i].length; ++x) {
                 for (int y = 0; y < arrays[i][x].length; ++y) {
-                    int current_slice = stacks[i].getStackIndex(1, z, t);
+                    int currentSlice = stacks[i].getStackIndex(1, z, t);
                     float[][] stack = stacks[i].getStack()
-                                               .getProcessor(current_slice)
+                                               .getProcessor(currentSlice)
                                                .getFloatArray();
                     float[][] array = arrays[i];
                     assertEquals(stack[x][y], array[x][y],
@@ -143,22 +143,22 @@ public class DoubleWavelengthStackOpTest {
             }
         }
     }
-    private float[][][] run_single(PhaseImage image1,
+    private float[][][] runSingle(PhaseImage image1,
                                    PhaseImage image2,
-                                   boolean show_steps)
+                                   boolean showSteps)
     {
         return (float[][][])M_ops.run(DoubleWavelengthOp.class,
-                                      image1, image2, show_steps);
+                                      image1, image2, showSteps);
     }
-    private ImagePlus[] run_stack(
+    private ImagePlus[] runStack(
         ImagePlus image1, float wavelength1, float value1,
         ImagePlus image2, float wavelength2, float value2,
-        boolean show_steps)
+        boolean showSteps)
     {
         return (ImagePlus[])M_ops.run(DoubleWavelengthStackOp.class,
                                       image1, wavelength1, value1,
                                       image2, wavelength2, value2,
-                                      show_steps);
+                                      showSteps);
     }
     private Context M_context = new Context(OpService.class);
     private OpService M_ops = M_context.getService(OpService.class);

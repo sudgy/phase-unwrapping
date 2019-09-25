@@ -47,32 +47,32 @@ public class GradientQuality extends AbstractQuality {
     }
     /** {@inheritDoc} */
     @Override
-    public float[][] calculate(float[][] phase_image, int t, int z)
+    public float[][] calculate(float[][] phaseImage, int t, int z)
     {
-        ImagePlus image = M_image.get_value();
-        int current_slice = image.getStackIndex(1, z, t);
-        float[][] data = M_image.get_value()
+        ImagePlus image = M_image.getValue();
+        int currentSlice = image.getStackIndex(1, z, t);
+        float[][] data = M_image.getValue()
                                 .getStack()
-                                .getProcessor(current_slice)
+                                .getProcessor(currentSlice)
                                 .getFloatArray();
-        return calculate_with(data);
+        return calculateWith(data);
     }
     // For testing purposes, we want to be able to bypass the ImageParameter.
     // This is package-private so that the tests can see this too.
-    float[][] calculate_with(float[][] data)
+    float[][] calculateWith(float[][] data)
     {
         M_result = new float[data.length][data[0].length];
         for (int x = 0; x < M_result.length; ++x) {
             for (int y = 0; y < M_result[0].length; ++y) {
-                for (int x_plus = -1; x_plus <= 1; ++x_plus) {
-                    for (int y_plus = -1; y_plus <= 1; ++y_plus) {
-                        if (x_plus == 0 && y_plus == 0) continue;
-                        int new_x = x + x_plus;
-                        int new_y = y + y_plus;
-                        if (new_x == -1 || new_y == -1) continue;
-                        if (new_x == M_result.length ||
-                            new_y == M_result[0].length) continue;
-                        float diff = data[x][y] - data[new_x][new_y];
+                for (int xPlus = -1; xPlus <= 1; ++xPlus) {
+                    for (int yPlus = -1; yPlus <= 1; ++yPlus) {
+                        if (xPlus == 0 && yPlus == 0) continue;
+                        int newX = x + xPlus;
+                        int newY = y + yPlus;
+                        if (newX == -1 || newY == -1) continue;
+                        if (newX == M_result.length ||
+                            newY == M_result[0].length) continue;
+                        float diff = data[x][y] - data[newX][newY];
                         M_result[x][y] -= Math.abs(diff);
                     }
                 }
@@ -81,11 +81,11 @@ public class GradientQuality extends AbstractQuality {
         return M_result;
     }
     /** {@inheritDoc} */
-    @Override public float[][] get_result() {return M_result;}
+    @Override public float[][] getResult() {return M_result;}
     /** {@inheritDoc} */
-    @Override public int get_ts() {return M_image.get_value().getNFrames();}
+    @Override public int getTs() {return M_image.getValue().getNFrames();}
     /** {@inheritDoc} */
-    @Override public int get_zs() {return M_image.get_value().getNSlices();}
+    @Override public int getZs() {return M_image.getValue().getNSlices();}
 
     private ImageParameter M_image;
     private float[][] M_result;

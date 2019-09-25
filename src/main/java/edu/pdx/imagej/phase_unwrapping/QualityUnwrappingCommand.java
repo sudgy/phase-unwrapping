@@ -43,31 +43,31 @@ import edu.pdx.imagej.dynamic_parameters.*;
 public class QualityUnwrappingCommand implements Command, Initializable {
     @Parameter private OpService P_ops;
 
-    @Parameter private ImageParameter      P_phase_image;
+    @Parameter private ImageParameter      P_phaseImage;
     @Parameter private QualityParameter    P_quality;
-    @Parameter private BoolParameter       P_single_frame;
-    @Parameter private PhaseValueParameter P_phase_value;
-    @Parameter private ChoiceParameter     P_output_type;
-    @Parameter private BoolParameter       P_show_progress;
+    @Parameter private BoolParameter       P_singleFrame;
+    @Parameter private PhaseValueParameter P_phaseValue;
+    @Parameter private ChoiceParameter     P_outputType;
+    @Parameter private BoolParameter       P_showProgress;
 
     /** Initializes the dynamic parameters. */
     @Override
     public void initialize()
     {
-        P_phase_image = new ImageParameter("Phase_Image");
+        P_phaseImage = new ImageParameter("Phase_image");
         P_quality = new QualityParameter();
-        P_single_frame = new BoolParameter("Single_Frame", false);
-        P_phase_value = new PhaseValueParameter("Pixel_Phase_Value",
-                                                P_phase_image);
+        P_singleFrame = new BoolParameter("Single_frame", false);
+        P_phaseValue = new PhaseValueParameter("Pixel_phase_value",
+                                                P_phaseImage);
         String[] choices = {"8-bit", "32-bit", "32-bit (radians)"};
-        P_output_type = new ChoiceParameter("Output_Type", choices);
-        P_show_progress = new BoolParameter("Show Progress", true);
+        P_outputType = new ChoiceParameter("Output_type", choices);
+        P_showProgress = new BoolParameter("Show Progress", true);
     }
 
     /** Run the command, computing and showing all unwrapping. */
     public void run() {
         QualityUnwrappingStackOp.OutputType type = null;
-        switch (P_output_type.get_value()) {
+        switch (P_outputType.getValue()) {
             case "8-bit":
                 type = QualityUnwrappingStackOp.OutputType.Type8Bit;
                 break;
@@ -80,11 +80,11 @@ public class QualityUnwrappingCommand implements Command, Initializable {
         }
         ImagePlus result = (ImagePlus)P_ops.run(
             "Quality Guided Phase Unwrapping",
-            P_phase_image.get_value(),
-            P_quality.get_value(),
-            P_show_progress.get_value(),
-            (float)P_phase_value.get_value().doubleValue(),
-            P_single_frame.get_value(),
+            P_phaseImage.getValue(),
+            P_quality.getValue(),
+            P_showProgress.getValue(),
+            (float)P_phaseValue.getValue().doubleValue(),
+            P_singleFrame.getValue(),
             type
         );
         result.show();

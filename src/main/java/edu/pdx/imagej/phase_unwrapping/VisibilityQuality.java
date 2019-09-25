@@ -52,22 +52,22 @@ public class VisibilityQuality extends AbstractQuality {
     }
     /** {@inheritDoc} */
     @Override
-    public float[][] calculate(float[][] phase_image, int t, int z)
+    public float[][] calculate(float[][] phaseImage, int t, int z)
     {
-        ImagePlus hologram = M_holo.get_value();
-        int current_slice = hologram.getStackIndex(1, z, t);
+        ImagePlus hologram = M_holo.getValue();
+        int currentSlice = hologram.getStackIndex(1, z, t);
         float[][] data = hologram.getStack()
-                                 .getProcessor(current_slice)
+                                 .getProcessor(currentSlice)
                                  .getFloatArray();
         M_result = (float[][])P_ops.run("Fringe Visibility", (Object)data);
         return M_result;
     }
     /** {@inheritDoc} */
-    @Override public float[][] get_result() {return M_result;}
+    @Override public float[][] getResult() {return M_result;}
     /** {@inheritDoc} */
-    @Override public int get_ts() {return M_holo.get_value().getNFrames();}
+    @Override public int getTs() {return M_holo.getValue().getNFrames();}
     /** {@inheritDoc} */
-    @Override public int get_zs() {return M_holo.get_value().getNSlices();}
+    @Override public int getZs() {return M_holo.getValue().getNSlices();}
 
     private ImageParameter   M_holo;
     private float[][]        M_result;

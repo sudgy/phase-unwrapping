@@ -22,7 +22,7 @@ package edu.pdx.imagej.phase_unwrapping;
 /** PhaseImage is a data structure that holds information for a phase image. */
 public class PhaseImage {
     /** The phase image itself. */
-    public float[][] phase_image;
+    public float[][] phaseImage;
     /** The wavelength of the light used to get this phase image.  It is only
      * used in {@link DoubleWavelengthOp}, where only the difference between the
      * wavelengths matter, and not their actual value.  Thus, the units on this
@@ -34,5 +34,5 @@ public class PhaseImage {
      * value it can have.  The most common values that this can take are 256 for
      * an 8-bit image, and 2π for a 32-bit float that goes from -π to π.
      */
-    public float phase_value;
+    public float phaseValue;
 }

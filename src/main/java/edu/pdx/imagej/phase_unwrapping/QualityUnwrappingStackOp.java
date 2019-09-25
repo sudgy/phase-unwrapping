@@ -61,94 +61,94 @@ public class QualityUnwrappingStackOp extends AbstractOp {
 
     @Parameter private OpService P_ops;
     // Inputs
-    @Parameter private ImagePlus  P_phase_image;
+    @Parameter private ImagePlus  P_phaseImage;
     @Parameter private Quality    P_quality;
-    @Parameter private boolean    P_show_progress;
-    @Parameter private float      P_phase_value;
-    @Parameter private boolean    P_single_frame;
-    @Parameter private OutputType P_output_type;
+    @Parameter private boolean    P_showProgress;
+    @Parameter private float      P_phaseValue;
+    @Parameter private boolean    P_singleFrame;
+    @Parameter private OutputType P_outputType;
     // Outputs
     @Parameter(type = ItemIO.OUTPUT) ImagePlus P_result;
 
     @Override
     public void run()
     {
-        P_quality.set_phase_value(P_phase_value);
-        if (P_single_frame) calculate_single();
-        else calculate_stack();
-        P_result.copyScale(P_phase_image);
+        P_quality.setPhaseValue(P_phaseValue);
+        if (P_singleFrame) calculateSingle();
+        else calculateStack();
+        P_result.copyScale(P_phaseImage);
     }
-    private void calculate_single()
+    private void calculateSingle()
     {
-        float[][] image = P_phase_image.getProcessor().getFloatArray();
+        float[][] image = P_phaseImage.getProcessor().getFloatArray();
         P_quality.calculate(image, 1, 1);
         float[][] result = (float[][])P_ops.run(
             "Quality Guided Phase Unwrapping",
-            image, P_quality, P_show_progress, P_phase_value);
-        P_result = new ImagePlus("Result", convert_result(result));
+            image, P_quality, P_showProgress, P_phaseValue);
+        P_result = new ImagePlus("Result", convertResult(result));
     }
-    private void calculate_stack()
+    private void calculateStack()
     {
-        int ts = P_phase_image.getNFrames();
-        int zs = P_phase_image.getNSlices();
-        int width = P_phase_image.getProcessor().getWidth();
-        int height = P_phase_image.getProcessor().getHeight();
+        int ts = P_phaseImage.getNFrames();
+        int zs = P_phaseImage.getNSlices();
+        int width = P_phaseImage.getProcessor().getWidth();
+        int height = P_phaseImage.getProcessor().getHeight();
 
         ImageStack result = new ImageStack(width, height);
-        ImagePlus P_quality_img = null;
+        ImagePlus P_qualityImg = null;
 
-        int q_ts = P_quality.get_ts();
-        int q_zs = P_quality.get_zs();
-        if (q_ts == 0) q_ts = ts;
-        if (q_zs == 0) q_zs = zs;
-        if (q_ts != ts && q_zs != zs) {
-            float[][] image = P_phase_image.getProcessor().getFloatArray();
+        int qTs = P_quality.getTs();
+        int qZs = P_quality.getZs();
+        if (qTs == 0) qTs = ts;
+        if (qZs == 0) qZs = zs;
+        if (qTs != ts && qZs != zs) {
+            float[][] image = P_phaseImage.getProcessor().getFloatArray();
             P_quality.calculate(image, 1, 1);
         }
 
         for (int t = 1; t <= ts; ++t) {
-            if (q_ts == ts && q_zs != zs) calculate_quality(t, 1);
+            if (qTs == ts && qZs != zs) calculateQuality(t, 1);
             for (int z = 1; z <= zs; ++z) {
-                if (q_zs == zs) calculate_quality(q_ts == ts ? t : 1, z);
+                if (qZs == zs) calculateQuality(qTs == ts ? t : 1, z);
 
-                float[][] image = get_phase_image(t, z);
-                float[][] this_result = (float[][])P_ops.run(
+                float[][] image = getPhaseImage(t, z);
+                float[][] thisResult = (float[][])P_ops.run(
                     "Quality Guided Phase Unwrapping",
-                    image, P_quality, P_show_progress, P_phase_value);
-                String label = P_phase_image.getStack()
-                    .getSliceLabel(P_phase_image.getStackIndex(1, z, t))
+                    image, P_quality, P_showProgress, P_phaseValue);
+                String label = P_phaseImage.getStack()
+                    .getSliceLabel(P_phaseImage.getStackIndex(1, z, t))
                     + ", unwrapped";
-                result.addSlice(label, convert_result(this_result));
+                result.addSlice(label, convertResult(thisResult));
             }
         }
-        String label = P_phase_image.getTitle() + ", unwrapped";
+        String label = P_phaseImage.getTitle() + ", unwrapped";
         P_result = IJ.createHyperStack(label, width, height, 1, zs, ts, 32);
         P_result.setStack(result);
     }
-    private void calculate_quality(int t, int z)
+    private void calculateQuality(int t, int z)
     {
-        P_quality.calculate(get_phase_image(t, z), t, z);
+        P_quality.calculate(getPhaseImage(t, z), t, z);
     }
-    private float[][] get_phase_image(int t, int z)
+    private float[][] getPhaseImage(int t, int z)
     {
-        int slice = P_phase_image.getStackIndex(1, z, t);
-        return P_phase_image.getStack()
+        int slice = P_phaseImage.getStackIndex(1, z, t);
+        return P_phaseImage.getStack()
                             .getProcessor(slice)
                             .getFloatArray();
     }
 
-    private ImageProcessor convert_result(float[][] image)
+    private ImageProcessor convertResult(float[][] image)
     {
-        if (P_output_type == OutputType.Type8Bit) {
+        if (P_outputType == OutputType.Type8Bit) {
             return new FloatProcessor(image).convertToByteProcessor();
         }
-        else if (P_output_type == OutputType.Type32Bit) {
+        else if (P_outputType == OutputType.Type32Bit) {
             return new FloatProcessor(image);
         }
         else { // 32-bit radians
             for (int x = 0; x < image.length; ++x) {
                 for (int y = 0; y < image[0].length; ++y) {
-                    image[x][y] /= P_phase_value;
+                    image[x][y] /= P_phaseValue;
                     image[x][y] *= Math.PI * 2;
                 }
             }
